@@ -1,5 +1,6 @@
 import streamlit as st
 import hashlib
+from logger import logger
 from database import DatabaseManager
 
 
@@ -20,23 +21,32 @@ class AuthManager:
             user = empleados_df[empleados_df['correo'] == email]
 
             if user.empty:
+                logger.info("Usuario no encontrado.")
                 return None
 
             user_data = user.iloc[0]
 
             # Verificar si el usuario está activo
             if not user_data['activo']:
+                logger.info("Usuario inactivo.")
                 return None
 
             # Para este ejemplo, usaremos una contraseña simple
             # En producción, deberías tener contraseñas hasheadas en la BD
             if password == "123456":  # Contraseña temporal para todos
+                logger.info("Usuario autenticado exitosamente.")
+                st.chat_message("system").markdown(
+                    f"**Bienvenido, {user_data['nombre']}!**\n"
+                    "Tienes acceso a todas las funcionalidades de la aplicación."
+                )
                 return {
                     'id_empleado': user_data['id_empleado'],
                     'nombre': user_data['nombre'],
                     'correo': user_data['correo'],
                     'rol': user_data['rol']
                 }
+
+            logger.info("Contraseña incorrecta.")
 
             return None
 
