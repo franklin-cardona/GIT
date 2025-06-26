@@ -16,9 +16,12 @@ class AuthManager:
         """Autentica un usuario y retorna sus datos"""
         try:
             empleados_df = self.db_manager.get_data('Empleados')
+            st.chat_message("user")
+            st.write("Autenticando usuario...")
 
             # Buscar el usuario por email
             user = empleados_df[empleados_df['correo'] == email]
+            st.write(f"Usuario encontrado: {user.shape[0]} coincidencias")
 
             if user.empty:
                 # logger.info("Usuario no encontrado.")
