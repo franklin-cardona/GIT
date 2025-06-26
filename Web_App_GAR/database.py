@@ -16,8 +16,8 @@ class DatabaseManager:
         self.sql_connection = None
         self.use_excel = False
         
-    def connect_to_sql_server(self, server: str = "localhost", database: str = "EmployeeDB", 
-                             username: str = None, password: str = None) -> bool:
+    def connect_to_sql_server(self, server: str = "localhost", database: str = "GAR", 
+                             username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
             print("pyodbc no está disponible. Usando archivo Excel como fallback")
