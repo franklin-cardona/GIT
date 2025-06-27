@@ -24,7 +24,7 @@ class AuthManager:
             st.write(f"Usuario encontrado: {user.shape[0]} coincidencias")
 
             if user.empty:
-                # logger.info("Usuario no encontrado.")
+                st.write("No se encontró el usuario.")
                 return None
 
             user_data = user.iloc[0]
