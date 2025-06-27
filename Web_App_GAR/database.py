@@ -18,7 +18,7 @@ class DatabaseManager:
         self.sql_connection = None
         self.use_excel = False
 
-    def connect_to_sql_server(self, server: str = "localhost", database: str = "GAR",
+    def connect_to_sql_server(self, server: str = "0.0.0.0:1433", database: str = "GAR",
                               username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
