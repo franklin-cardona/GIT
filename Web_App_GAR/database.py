@@ -1,5 +1,5 @@
 import pandas as pd
-# from logger import logger
+import streamlit as st
 import os
 from typing import Optional, Dict, Any, List
 
@@ -22,6 +22,7 @@ class DatabaseManager:
                               username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
+            st.write("pyodbc no está disponible. Usando archivo Excel como fallback")
             print("pyodbc no está disponible. Usando archivo Excel como fallback")
             # logger.info(
             #     "pyodbc no está disponible. Usando archivo Excel como fallback")
@@ -37,10 +38,12 @@ class DatabaseManager:
             self.sql_connection = pyodbc.connect(connection_string)
             self.use_excel = False
             print("Conexión exitosa a SQL Server")
+            st.write("Conexión exitosa a SQL Server")
             # logger.info("Conexión exitosa a SQL Server")
             return True
         except Exception as e:
             print(f"Error conectando a SQL Server: {e}")
+            st.write("Error conectando a SQL Server. Usando archivo Excel como fallback")
             print("Usando archivo Excel como fallback")
             # logger.error(f"Error conectando a SQL Server: {e}")
             self.use_excel = True
