@@ -49,10 +49,7 @@ def main():
             st.session_state.db_manager.excel_path = None
             st.write("Conexión a SQL Server establecida.")
         else:
-            st.session_state.db_manager.use_excel = True
-            st.session_state.db_manager.excel_path = "Basedatos.xlsx"
             st.write("No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
-        st.session_state.db_manager = DatabaseManager()
     
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False  

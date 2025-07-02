@@ -10,6 +10,7 @@ try:
 except ImportError:
     PYODBC_AVAILABLE = False
     print("pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
+    st.write("pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
 
 
 class DatabaseManager:
@@ -18,7 +19,7 @@ class DatabaseManager:
         self.sql_connection = None
         self.use_excel = False
 
-    def connect_to_sql_server(self, server: str = "0.0.0.0:1433", database: str = "GAR",
+    def connect_to_sql_server(self, server: str = "localhost,1433", database: str = "db_gpc",
                               username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
@@ -34,11 +35,13 @@ class DatabaseManager:
                 connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
             else:
                 connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes"
+            
+            st.write("connection_string:", connection_string)
 
             self.sql_connection = pyodbc.connect(connection_string)
             self.use_excel = False
-            print("Conexión exitosa a SQL Server")
-            st.write("Conexión exitosa a SQL Server")
+            print(f"Conexión exitosa a SQL Server {self.sql_connection}" if self.sql_connection else "No se pudo conectar a SQL Server")
+            #st.write(f"Conexión exitosa a SQL Server {self.sql_connection}" if self.sql_connection else "No se pudo conectar a SQL Server")
             # logger.info("Conexión exitosa a SQL Server")
             return True
         except Exception as e:
@@ -69,6 +72,8 @@ class DatabaseManager:
         """Lee datos de SQL Server"""
         try:
             query = f"SELECT * FROM {table_name}"
+            #st.write(f"Ejecutando consulta SQL: {query}")
+            #st.write(f"Conexión SQL: {self.sql_connection}")
             df = pd.read_sql(query, self.sql_connection)
             return df
         except Exception as e:
