@@ -1,7 +1,10 @@
-import pandas as pd
 import streamlit as st
-import os
 from typing import Optional, Dict, Any, List
+import pandas as pd
+import os
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL
+
 
 # Importar pyodbc de forma opcional
 try:
@@ -19,7 +22,7 @@ class DatabaseManager:
         self.sql_connection = None
         self.use_excel = False
 
-    def connect_to_sql_server(self, server: str = "localhost,1433", database: str = "db_gpc",
+    def connect_to_sql_server(self, server: str = "localhost", database: str = "db_gpc", port: Optional[int] = '1433',
                               username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
@@ -32,23 +35,48 @@ class DatabaseManager:
 
         try:
             if username and password:
-                connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
+                #connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
+                connection_url = URL.create(
+                    'mssql+pyodbc',
+                    username=username,
+                    password=password,
+                    host=server,
+                    port=port,
+                    database=database,
+                    query={"driver": "ODBC Driver 17 for SQL Server"}
+                )
             else:
-                connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes"
+                #connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes"
+                # Para autenticación de Windows (Trusted_Connection)
+                connection_url = URL.create(
+                    'mssql+pyodbc',
+                    host=server,
+                    port=port,
+                    database=database,
+                    query={
+                        "driver": "ODBC Driver 17 for SQL Server",
+                        "Trusted_Connection": "yes"
+                    }
+                )
             
-            st.write("connection_string:", connection_string)
+            st.write("connection_string:", connection_url)
+            print("connection_string:", connection_url)
 
-            self.sql_connection = pyodbc.connect(connection_string)
-            self.use_excel = False
-            print(f"Conexión exitosa a SQL Server {self.sql_connection}" if self.sql_connection else "No se pudo conectar a SQL Server")
+            self.sql_engine = create_engine(connection_url)
+            # Probar la conexión
+            with self.sql_engine.connect() as connection:
+                print(f"Conectando a SQL Server usando SQLAlchemy...{connection}")
+                connection.execute(text("SELECT 1"))
+
+            #print(f"Conexión exitosa a SQL Server {self.sql_connection}" if self.sql_connection else "No se pudo conectar a SQL Server")
             #st.write(f"Conexión exitosa a SQL Server {self.sql_connection}" if self.sql_connection else "No se pudo conectar a SQL Server")
             # logger.info("Conexión exitosa a SQL Server")
+            self.use_excel = False
+            print("Conexión exitosa a SQL Server usando SQLAlchemy")
             return True
         except Exception as e:
-            print(f"Error conectando a SQL Server: {e}")
-            st.write("Error conectando a SQL Server. Usando archivo Excel como fallback")
+            print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
             print("Usando archivo Excel como fallback")
-            # logger.error(f"Error conectando a SQL Server: {e}")
             self.use_excel = True
             return False
 
@@ -74,10 +102,10 @@ class DatabaseManager:
             query = f"SELECT * FROM {table_name}"
             #st.write(f"Ejecutando consulta SQL: {query}")
             #st.write(f"Conexión SQL: {self.sql_connection}")
-            df = pd.read_sql(query, self.sql_connection)
+            df = pd.read_sql(query, self.sql_engine)
             return df
         except Exception as e:
-            print(f"Error leyendo SQL: {e}")
+            print(f"Error leyendo SQL con SQLAlchemy: {e}")
             return pd.DataFrame()
 
     def insert_data(self, table_name: str, data: Dict[str, Any]) -> bool:
@@ -95,18 +123,18 @@ class DatabaseManager:
         return True
 
     def _insert_data_to_sql(self, table_name: str, data: Dict[str, Any]) -> bool:
-        """Inserta datos en SQL Server"""
+        """Inserta datos en SQL Server usando SQLAlchemy"""
         try:
-            columns = ', '.join(data.keys())
-            placeholders = ', '.join(['?' for _ in data.values()])
+            columns = ", ".join(data.keys())
+            placeholders = ", ".join([f":{key}" for key in data.keys()])
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-
-            cursor = self.sql_connection.cursor()
-            cursor.execute(query, list(data.values()))
-            self.sql_connection.commit()
+            
+            with self.sql_engine.connect() as connection:
+                connection.execute(query, data)
+                connection.commit()
             return True
         except Exception as e:
-            print(f"Error insertando en SQL: {e}")
+            print(f"Error insertando en SQL con SQLAlchemy: {e}")
             return False
 
     def update_data(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
@@ -122,18 +150,19 @@ class DatabaseManager:
             f"Simulando actualización en Excel - Tabla: {sheet_name}, Datos: {data}, Condición: {condition}")
         return True
 
+    
     def _update_data_in_sql(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
-        """Actualiza datos en SQL Server"""
+        """Actualiza datos en SQL Server usando SQLAlchemy"""
         try:
-            set_clause = ', '.join([f"{key} = ?" for key in data.keys()])
+            set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
             query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
-
-            cursor = self.sql_connection.cursor()
-            cursor.execute(query, list(data.values()))
-            self.sql_connection.commit()
+            
+            with self.sql_engine.connect() as connection:
+                connection.execute(query, data)
+                connection.commit()
             return True
         except Exception as e:
-            print(f"Error actualizando en SQL: {e}")
+            print(f"Error actualizando en SQL con SQLAlchemy: {e}")
             return False
 
     def delete_data(self, table_name: str, condition: str) -> bool:
@@ -150,18 +179,18 @@ class DatabaseManager:
         return True
 
     def _delete_data_from_sql(self, table_name: str, condition: str) -> bool:
-        """Elimina datos de SQL Server"""
+        """Elimina datos de SQL Server usando SQLAlchemy"""
         try:
             query = f"DELETE FROM {table_name} WHERE {condition}"
-            cursor = self.sql_connection.cursor()
-            cursor.execute(query)
-            self.sql_connection.commit()
+            with self.sql_engine.connect() as connection:
+                connection.execute(query)
+                connection.commit()
             return True
         except Exception as e:
-            print(f"Error eliminando en SQL: {e}")
+            print(f"Error eliminando en SQL con SQLAlchemy: {e}")
             return False
 
     def close_connection(self):
         """Cierra la conexión a la base de datos"""
-        if self.sql_connection:
-            self.sql_connection.close()
+        if hasattr(self, 'sql_engine') and self.sql_engine:
+            self.sql_engine.dispose()
