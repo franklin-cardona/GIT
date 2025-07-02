@@ -44,11 +44,23 @@ def main():
     if 'db_manager' not in st.session_state:
         st.session_state.db_manager = DatabaseManager()
         st.session_state.db_manager.connect_to_sql_server()
-        if st.session_state.db_manager.sql_engine or st.session_state.db_manager.sql_lite_connection:
+        if st.session_state.db_manager.sql_engine:
             st.session_state.db_manager.use_excel = False
-        else:
             st.write(
-                "No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
+                f"Conectado a SQL Server exitosamente. Base de datos: {st.session_state.db_manager.path}")
+            st.session_state.db_manager.sql_engine.dispose()
+
+        else:
+            st.session_state.db_manager.connect_to_sql_lite()
+            if st.session_state.db_manager.sql_lite_connection:
+                st.write("Conectado a SQLite exitosamente.")
+                st.session_state.db_manager.use_excel = False
+                st.session_state.db_manager.sql_lite_connection.close()
+            else:
+                st.session_state.db_manager.use_excel = True
+                st.session_state.db_manager.path = "Basedatos.xlsx"
+                st.write(
+                    "No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
 
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False

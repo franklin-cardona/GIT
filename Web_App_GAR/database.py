@@ -18,13 +18,39 @@ except ImportError:
 
 
 class DatabaseManager:
-    def __init__(self, excel_path: str = None):
-        self.excel_path = excel_path or "Basedatos.xlsx"
+    def __init__(self, excel_path: str = "") -> None:
+        self.path = excel_path or "Basedatos.xlsx"
         self.use_excel = False
         self.sql_engine = None
         self.sql_lite_connection = None
+        self.cursor = None
 
-    def connect_to_sql_server(self, server: str = "localhost", database: str = "db_gpc", port: Optional[int] = '1433',
+    def connect_to_sql_lite(self, db_path: str = "db_gpc.db") -> bool:
+        """Intenta conectar a SQLite"""
+        self.path = db_path
+        if not os.path.exists(db_path):
+            print(f"Archivo SQLite no encontrado: {self.path}")
+            st.write(f"Archivo SQLite no encontrado: {self.path}")
+            return False
+        try:
+            self.sql_lite_connection = sqlite3.connect(self.path)
+            with self.sql_lite_connection:
+                print("Conectando a SQLite...")
+                self.sql_lite_connection.execute("SELECT 1")
+                print("Conexión exitosa a SQLite")
+                st.write("Conexión exitosa a SQLite")
+                self.use_excel = False
+                self.sql_engine = None  # Asegurarse de que no se use
+                return True
+
+        except Exception as e:
+            print(f"Error conectando a SQLite: {e}")
+            st.write(f"Error conectando a SQLite: {e}")
+            self.sql_lite_connection = None
+            self.cursor = None
+            return False
+
+    def connect_to_sql_server(self, server: str = "localhost", database: str = "db_gpc", port: Optional[int] = 1433,
                               username: str = "sa", password: str = "Password123456") -> bool:
         """Intenta conectar a SQL Server"""
         if not PYODBC_AVAILABLE:
@@ -73,33 +99,18 @@ class DatabaseManager:
                 connection.execute(text("SELECT 1"))
                 print("Conexión exitosa a SQL Server usando SQLAlchemy")
                 st.write("Conexión exitosa a SQL Server usando SQLAlchemy")
+                self.path = "MSSQL Server"
                 self.use_excel = False
                 # logger.info("Conexión exitosa a SQL Server usando SQLAlchemy")
                 self.sql_lite_connection = None  # Asegurarse de que no se use
-            return True
+                return True
+
+            print(
+                f"Conexión {self.sql_engine} exitosa a SQL Server usando SQLAlchemy")
+            return False
         except Exception as e:
             print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
-            try:
-                self.sql_lite_connection = sqlite3.connect("db_gpc.db")
-                with self.sql_lite_connection:
-                    print("Conectando a SQLite...")
-                    self.sql_lite_connection.execute("SELECT 1")
-                    print("Conexión exitosa a SQLite")
-                    st.write("Conexión exitosa a SQLite")
-                    self.use_excel = False
-                    self.sql_engine = None
-                    # logger.info("Conexión exitosa a SQLite")
-                return True
-            except Exception as e:
-                print(f"Error conectando a SQLite: {e}")
-                self.sql_lite_connection = None  # Asegurarse de que no se use
-                self.use_excel = True
-                self.sql_engine = None
-                st.write(
-                    "No se pudo conectar a SQL Server ni a SQLite. Usando archivo Excel como fallback.")
-                # logger.info("No se pudo conectar a SQL Server ni a SQLite. Usando archivo
-                print("Usando archivo Excel como fallback")
-
+            self.sql_engine = None
             return False
 
     def get_data(self, table_name: str) -> pd.DataFrame:
@@ -121,7 +132,7 @@ class DatabaseManager:
     def _get_data_from_excel(self, sheet_name: str) -> pd.DataFrame:
         """Lee datos del archivo Excel"""
         try:
-            df = pd.read_excel(self.excel_path, sheet_name=sheet_name)
+            df = pd.read_excel(self.path, sheet_name=sheet_name)
             return df
         except Exception as e:
             print(f"Error leyendo Excel: {e}")
@@ -129,6 +140,10 @@ class DatabaseManager:
 
     def _get_data_from_sql(self, table_name: str) -> pd.DataFrame:
         """Lee datos de SQL Server"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return pd.DataFrame()
         try:
             query = f"SELECT * FROM {table_name}"
             # st.write(f"Ejecutando consulta SQL: {query}")
@@ -141,14 +156,26 @@ class DatabaseManager:
 
     def get_data_from_sql_lite(self, table_name: str) -> pd.DataFrame:
         """Lee datos de SQLite"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return pd.DataFrame()
         try:
+            # Asegurarse de que la conexión esté activ
+            self.connect_to_sql_lite(self.path)
             with self.sql_lite_connection:
                 print(
                     f"Conectando a SQLite para leer datos de la tabla: {table_name}")
                 query = f"SELECT * FROM {table_name}"
                 print(
                     f"Ejecutando consulta SQLite: {query} en {self.sql_lite_connection}")
-                df = pd.read_sql_query(query, self.sql_lite_connection)
+                self.cursor = self.sql_lite_connection.cursor()
+                # Ejecutar la consulta
+                self.cursor.execute(query)
+                data = self.cursor.fetchall()
+                df = pd.DataFrame(data, columns=[col[0]
+                                  for col in self.cursor.description])
+                self.cursor.close()
                 return df
         except Exception as e:
             print(f"Error leyendo SQLite: {e}")
@@ -176,13 +203,16 @@ class DatabaseManager:
 
     def _insert_data_to_sql(self, table_name: str, data: Dict[str, Any]) -> bool:
         """Inserta datos en SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return False
         try:
             columns = ", ".join(data.keys())
             placeholders = ", ".join([f":{key}" for key in data.keys()])
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-
             with self.sql_engine.connect() as connection:
-                connection.execute(query, data)
+                connection.execute(text(query), data)
                 connection.commit()
             return True
         except Exception as e:
@@ -191,13 +221,23 @@ class DatabaseManager:
 
     def _insert_data_to_sql_lite(self, table_name: str, data: Dict[str, Any]) -> bool:
         """Inserta datos en SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return False
         try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
             columns = ", ".join(data.keys())
             placeholders = ", ".join([f":{key}" for key in data.keys()])
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            print(f"Ejecutando consulta SQLite: {query} con datos: {data}")
 
             with self.sql_lite_connection:
-                self.sql_lite_connection.execute(query, data)
+                self.cursor.execute(query, data)
+                self.sql_lite_connection.commit()
+                print(f"Datos insertados en SQLite: {data}")
+            self.cursor.close()
             return True
         except Exception as e:
             print(f"Error insertando en SQLite: {e}")
@@ -224,12 +264,16 @@ class DatabaseManager:
 
     def _update_data_in_sql(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
         """Actualiza datos en SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return False
         try:
             set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
             query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
 
             with self.sql_engine.connect() as connection:
-                connection.execute(query, data)
+                connection.execute(text(query), data)
                 connection.commit()
             return True
         except Exception as e:
@@ -238,12 +282,20 @@ class DatabaseManager:
 
     def _update_data_sql_lite(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
         """Actualiza datos en SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return False
         try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
             set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
             query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
 
             with self.sql_lite_connection:
-                self.sql_lite_connection.execute(query, data)
+                self.cursor.execute(query, data)
+                self.cursor.connection.commit()
+                self.cursor.close()
             return True
         except Exception as e:
             print(f"Error actualizando en SQLite: {e}")
@@ -270,10 +322,18 @@ class DatabaseManager:
 
     def _delete_data_from_sql_lite(self, table_name: str, condition: str) -> bool:
         """Elimina datos de SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return False
         try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
             query = f"DELETE FROM {table_name} WHERE {condition}"
             with self.sql_lite_connection:
-                self.sql_lite_connection.execute(query)
+                self.cursor.execute(query)
+                self.sql_lite_connection.commit()
+                self.cursor.close()
             return True
         except Exception as e:
             print(f"Error eliminando en SQLite: {e}")
@@ -281,6 +341,10 @@ class DatabaseManager:
 
     def _delete_data_from_sql(self, table_name: str, condition: str) -> bool:
         """Elimina datos de SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return False
         try:
             query = f"DELETE FROM {table_name} WHERE {condition}"
             with self.sql_engine.connect() as connection:
@@ -296,6 +360,9 @@ class DatabaseManager:
         if hasattr(self, 'sql_engine') and self.sql_engine:
             self.sql_engine.dispose()
         if hasattr(self, 'sql_lite_connection') and self.sql_lite_connection:
+            if self.cursor:
+                self.cursor.close()
+            self.cursor = None
             self.sql_lite_connection.close()
 
     def __del__(self):
