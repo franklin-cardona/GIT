@@ -98,6 +98,8 @@ def main():
             # Información de conexión
             if st.session_state.db_manager.use_excel:
                 st.warning("📁 Usando archivo Excel")
+            elif st.session_state.db_manager.sql_lite_connection:
+                st.success("🗄️ Conectado a SQLite")
             else:
                 st.success("🗄️ Conectado a SQL Server")
 

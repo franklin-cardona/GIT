@@ -360,8 +360,6 @@ class DatabaseManager:
         if hasattr(self, 'sql_engine') and self.sql_engine:
             self.sql_engine.dispose()
         if hasattr(self, 'sql_lite_connection') and self.sql_lite_connection:
-            if self.cursor:
-                self.cursor.close()
             self.cursor = None
             self.sql_lite_connection.close()
 
