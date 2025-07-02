@@ -16,8 +16,11 @@ class AuthManager:
         """Autentica un usuario y retorna sus datos"""
         try:
             empleados_df = self.db_manager.get_data('Empleados')
+            print(
+                f"Empleados DataFrame: {empleados_df.shape[0]} registros cargados")
             st.chat_message("user")
-            st.write(f"Autenticando usuario...{len(empleados_df)}" if st.session_state.get('authenticated') else "Iniciando sesión...")
+            st.write(f"Autenticando usuario...{len(empleados_df)}" if st.session_state.get(
+                'authenticated') else "Iniciando sesión...")
 
             # Buscar el usuario por email
             user = empleados_df[empleados_df['correo'] == email]

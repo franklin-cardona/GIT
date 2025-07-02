@@ -59,33 +59,33 @@ cursor = conn.cursor()
 
 # Guardar cambios y cerrar conexión
 
-insert_empleados = """
-INSERT INTO Empleados (nombre, correo, rol, activo) VALUES
-('Empleado 1', 'empleado1@example.com', 'administrador', 1),
-('Empleado 2', 'empleado2@example.com', 'empleado', 1);
-"""
+# insert_empleados = """
+# INSERT INTO Empleados (nombre, correo, rol, activo) VALUES
+# ('Empleado 1', 'empleado1@example.com', 'administrador', 1),
+# ('Empleado 2', 'empleado2@example.com', 'empleado', 1);
+# """
 
-cursor.executescript(insert_empleados)
+# cursor.executescript(insert_empleados)
 
-insert_contratos = """
-INSERT INTO Contratos (nombre_contrato, fecha_inicio, fecha_fin, id_empleado) VALUES
-('Contrato A', '2023-01-01', '2023-12-31', 1),
-('Contrato B', '2023-06-01', '2024-05-31', 2);
-"""
+# insert_contratos = """
+# INSERT INTO Contratos (nombre_contrato, fecha_inicio, fecha_fin, id_empleado) VALUES
+# ('Contrato A', '2023-01-01', '2023-12-31', 1),
+# ('Contrato B', '2023-06-01', '2024-05-31', 2);
+# """
 
-cursor.executescript(insert_contratos)
+# cursor.executescript(insert_contratos)
 
-insert_actividades = """
-INSERT INTO Actividades (Nro, descripcion, id_contrato, porcentaje) VALUES
-(101, 'Actividad 1', 1, 50),
-(102, 'Actividad 2', 1, 75),
-(3, 'Actividad 3', 2, 100);
-"""
-cursor.executescript(insert_actividades)
+# insert_actividades = """
+# INSERT INTO Actividades (Nro, descripcion, id_contrato, porcentaje) VALUES
+# (101, 'Actividad 1', 1, 50),
+# (102, 'Actividad 2', 1, 75),
+# (3, 'Actividad 3', 2, 100);
+# """
+# cursor.executescript(insert_actividades)
 
 insert_notificaciones = """
 INSERT INTO Notificaciones (id_empleado, mensaje, fecha_envio, leido) VALUES
-(1, 'Mensaje 1', '2023-01-01 10:00:00', ),
+(1, 'Mensaje 1', '2023-01-01 10:00:00', 1 ),
 (2, 'Mensaje 2', '2023-01-02 11:00:00', 0);
 """
 cursor.executescript(insert_notificaciones)

@@ -78,6 +78,7 @@ class DatabaseManager:
                 self.sql_lite_connection = None  # Asegurarse de que no se use
             return True
         except Exception as e:
+            print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
             try:
                 self.sql_lite_connection = sqlite3.connect("db_gpc.db")
                 with self.sql_lite_connection:
@@ -85,26 +86,32 @@ class DatabaseManager:
                     self.sql_lite_connection.execute("SELECT 1")
                     print("Conexión exitosa a SQLite")
                     st.write("Conexión exitosa a SQLite")
+                    self.use_excel = False
+                    self.sql_engine = None
                     # logger.info("Conexión exitosa a SQLite")
-                self.use_excel = False
-                self.sql_engine = None  # Asegurarse de que no se use
                 return True
             except Exception as e:
                 print(f"Error conectando a SQLite: {e}")
-            print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
-            print("Usando archivo Excel como fallback")
-            self.use_excel = True
-            self.sql_engine = None
-            self.sql_lite_connection = None  # Asegurarse de que no se use
+                self.sql_lite_connection = None  # Asegurarse de que no se use
+                self.use_excel = True
+                self.sql_engine = None
+                st.write(
+                    "No se pudo conectar a SQL Server ni a SQLite. Usando archivo Excel como fallback.")
+                # logger.info("No se pudo conectar a SQL Server ni a SQLite. Usando archivo
+                print("Usando archivo Excel como fallback")
+
             return False
 
     def get_data(self, table_name: str) -> pd.DataFrame:
         """Obtiene datos de la tabla especificada"""
         if self.use_excel:
+            print(f"Obteniendo datos de Excel - Tabla: {table_name}")
             return self._get_data_from_excel(table_name)
         elif self.sql_engine:
+            print(f"Obteniendo datos de SQL Server - Tabla: {table_name}")
             return self._get_data_from_sql(table_name)
         elif self.sql_lite_connection:
+            print(f"Obteniendo datos de SQLite - Tabla: {table_name}")
             return self.get_data_from_sql_lite(table_name)
         else:
             print("No hay conexión a ninguna base de datos.")
@@ -135,9 +142,14 @@ class DatabaseManager:
     def get_data_from_sql_lite(self, table_name: str) -> pd.DataFrame:
         """Lee datos de SQLite"""
         try:
-            query = f"SELECT * FROM {table_name}"
-            df = pd.read_sql(query, self.sql_lite_connection)
-            return df
+            with self.sql_lite_connection:
+                print(
+                    f"Conectando a SQLite para leer datos de la tabla: {table_name}")
+                query = f"SELECT * FROM {table_name}"
+                print(
+                    f"Ejecutando consulta SQLite: {query} en {self.sql_lite_connection}")
+                df = pd.read_sql_query(query, self.sql_lite_connection)
+                return df
         except Exception as e:
             print(f"Error leyendo SQLite: {e}")
             return pd.DataFrame()
