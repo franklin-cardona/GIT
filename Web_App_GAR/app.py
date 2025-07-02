@@ -42,17 +42,16 @@ st.markdown("""
 def main():
     # Inicializar el gestor de base de datos
     if 'db_manager' not in st.session_state:
-        st.session_state.db_manager = DatabaseManager()        
+        st.session_state.db_manager = DatabaseManager()
         st.session_state.db_manager.connect_to_sql_server()
-        if st.session_state.db_manager.sql_connection: 
+        if st.session_state.db_manager.sql_engine or st.session_state.db_manager.sql_lite_connection:
             st.session_state.db_manager.use_excel = False
-            st.session_state.db_manager.excel_path = None
-            st.write("Conexión a SQL Server establecida.")
         else:
-            st.write("No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
-    
+            st.write(
+                "No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
+
     if 'authenticated' not in st.session_state:
-        st.session_state.authenticated = False  
+        st.session_state.authenticated = False
     # Verificar si ya se ha inicializado el gestor de autenticación
 
     # Inicializar el gestor de autenticación
