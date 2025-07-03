@@ -3,10 +3,14 @@ from database import DatabaseManager
 from auth import AuthManager
 from admin_interface import AdminInterface
 from employee_interface import EmployeeInterface
+from logger import setup_logging
+
+
+logger = setup_logging()
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Sistema de Gestión de Empleados",
+    page_title="Sistema de Gestión de Colaboradores",
     page_icon="👥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -38,34 +42,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
 def main():
     # Inicializar el gestor de base de datos
     if 'db_manager' not in st.session_state:
         st.session_state.db_manager = DatabaseManager()
-        st.session_state.db_manager.connect_to_sql_server()
-        if st.session_state.db_manager.sql_engine:
-            st.session_state.db_manager.use_excel = False
-            st.write(
-                f"Conectado a SQL Server exitosamente. Base de datos: {st.session_state.db_manager.path}")
-            st.session_state.db_manager.sql_engine.dispose()
-
-        else:
-            st.session_state.db_manager.connect_to_sql_lite()
-            if st.session_state.db_manager.sql_lite_connection:
-                st.write("Conectado a SQLite exitosamente.")
-                st.session_state.db_manager.use_excel = False
-                st.session_state.db_manager.sql_lite_connection.close()
-            else:
+        if not st.session_state.db_manager.connect_to_sql_server():
+            if not st.session_state.db_manager.connect_to_sql_lite():
                 st.session_state.db_manager.use_excel = True
-                st.session_state.db_manager.path = "Basedatos.xlsx"
-                st.write(
-                    "No se pudo conectar a SQL Server. intentando archivo Excel como base de datos.")
-
-    if 'authenticated' not in st.session_state:
-        st.session_state.authenticated = False
-    # Verificar si ya se ha inicializado el gestor de autenticación
-
+                st.info("Usando archivo Excel como base de datos.")
+    
     # Inicializar el gestor de autenticación
     if 'auth_manager' not in st.session_state:
         st.session_state.auth_manager = AuthManager(
@@ -119,7 +104,6 @@ def main():
             employee_interface = EmployeeInterface(
                 st.session_state.db_manager, user_data)
             employee_interface.show_employee_dashboard()
-
 
 if __name__ == "__main__":
     main()

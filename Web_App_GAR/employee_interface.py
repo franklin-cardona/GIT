@@ -2,12 +2,24 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from database import DatabaseManager
+from logger import setup_logging
+
+
+logger = setup_logging()
+
 
 class EmployeeInterface:
     def __init__(self, db_manager: DatabaseManager, user_data: dict):
         self.db_manager = db_manager
         self.user_data = user_data
         self.employee_id = user_data['id_empleado']
+        logger.info(f"EmployeeInterface inicializado para {user_data['nombre']}")
+    
+    @st.cache_data(ttl=300)
+    def _get_cached_data(_self, table_name: str, employee_id: int = None, columns: list = None) -> pd.DataFrame:
+        """Obtiene datos con caché para mejorar rendimiento"""
+        filters = {'id_empleado': employee_id} if employee_id else None
+        return _self.db_manager.get_data(table_name, filters=filters)
     
     def show_employee_dashboard(self):
         """Muestra el dashboard del empleado"""
@@ -34,10 +46,10 @@ class EmployeeInterface:
         """Muestra el dashboard principal del empleado"""
         st.header("📊 Mi Resumen")
         
-        # Obtener datos del empleado
-        reportes_df = self.db_manager.get_data('Reportes')
-        actividades_df = self.db_manager.get_data('Actividades')
-        contratos_df = self.db_manager.get_data('Contratos')
+        # Obtener datos del empleado con caché
+        reportes_df = self._get_cached_data('Reportes', self.employee_id)
+        actividades_df = self._get_cached_data('Actividades')
+        contratos_df = self._get_cached_data('Contratos')
         
         # Filtrar reportes del empleado actual
         mis_reportes = reportes_df[reportes_df['id_empleado'] == self.employee_id]
@@ -59,6 +71,8 @@ class EmployeeInterface:
         with col3:
             porcentaje = (reportadas_con_acciones / total_actividades * 100) if total_actividades > 0 else 0
             st.metric("Porcentaje Completado", f"{porcentaje:.1f}%")
+        
+        # ... (resto del dashboard) ...
         
         # Botón para agregar acción
         if st.button("➕ Agregar Nueva Acción", type="primary"):
@@ -199,19 +213,27 @@ class EmployeeInterface:
                     st.warning("No hay actividades disponibles para este contrato")
     
     def show_my_reports(self):
-        """Muestra los reportes del empleado"""
+        """Muestra los reportes del empleado con paginación"""
         st.header("📊 Mis Reportes")
         
-        reportes_df = self.db_manager.get_data('Reportes')
-        actividades_df = self.db_manager.get_data('Actividades')
+        reportes_df = self._get_cached_data('Reportes', self.employee_id)
+        actividades_df = self._get_cached_data('Actividades')
         
         # Filtrar reportes del empleado
         mis_reportes = reportes_df[reportes_df['id_empleado'] == self.employee_id]
         
+        # Paginación
+        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
+        total_pages = max(1, (len(mis_reportes) // page_size) + (1 if len(mis_reportes) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1, max_value=total_pages, value=1)
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, len(mis_reportes))
+        
         if not mis_reportes.empty:
             # Combinar con información de actividades
             reportes_detallados = []
-            for _, reporte in mis_reportes.iterrows():
+            for idx in range(start_idx, end_idx):
+                reporte = mis_reportes.iloc[idx]
                 actividad = actividades_df[actividades_df['id_actividad'] == reporte['id_actividad']]
                 if not actividad.empty:
                     actividad_info = actividad.iloc[0]

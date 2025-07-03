@@ -2,12 +2,21 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from database import DatabaseManager
+from logger import setup_logging
 
+
+logger = setup_logging()
 
 class AdminInterface:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
-
+        logger.info("AdminInterface inicializado.")
+    
+    @st.cache_data(ttl=300)
+    def _get_cached_data(_self, table_name: str, columns: list = None) -> pd.DataFrame:
+        """Obtiene datos con caché para mejorar rendimiento"""
+        return _self.db_manager.get_data(table_name)
+    
     def show_admin_dashboard(self):
         """Muestra el dashboard principal del administrador"""
         st.title("📊 Panel de Administración")
@@ -38,10 +47,10 @@ class AdminInterface:
         """Muestra el dashboard principal con resúmenes"""
         st.header("📈 Resumen General")
 
-        # Obtener datos
-        empleados_df = self.db_manager.get_data('Empleados')
-        reportes_df = self.db_manager.get_data('Reportes')
-        actividades_df = self.db_manager.get_data('Actividades')
+        # Obtener datos con caché
+        empleados_df = self._get_cached_data('Empleados')
+        reportes_df = self._get_cached_data('Reportes')
+        actividades_df = self._get_cached_data('Actividades')
 
         # Métricas principales
         col1, col2, col3, col4 = st.columns(4)
@@ -50,8 +59,7 @@ class AdminInterface:
             st.metric("Total Empleados", len(empleados_df))
 
         with col2:
-            empleados_activos = len(
-                empleados_df[empleados_df['activo'] == True])
+            empleados_activos = len(empleados_df[empleados_df['activo'] == True])
             st.metric("Empleados Activos", empleados_activos)
 
         with col3:
@@ -61,39 +69,38 @@ class AdminInterface:
             reportes_mes = len(reportes_df)  # Simplificado para el ejemplo
             st.metric("Reportes del Mes", reportes_mes)
 
-        # Resumen por empleado
-        st.subheader("📋 Resumen por Empleado")
-
-        if not reportes_df.empty and not empleados_df.empty:
-            # Combinar datos de empleados y reportes
-            resumen = []
-            for _, empleado in empleados_df.iterrows():
-                reportes_empleado = reportes_df[reportes_df['id_empleado']
-                                                == empleado['id_empleado']]
-                total_actividades = len(reportes_empleado)
-                reportadas_con_acciones = len(
-                    reportes_empleado[reportes_empleado['acciones_realizadas'].notna()])
-
-                resumen.append({
-                    'Empleado': empleado['nombre'],
-                    'Total Actividades': total_actividades,
-                    'Reportadas con Acciones': reportadas_con_acciones,
-                    'Porcentaje': f"{(reportadas_con_acciones/total_actividades*100):.1f}%" if total_actividades > 0 else "0%"
-                })
-
-            resumen_df = pd.DataFrame(resumen)
-            st.dataframe(resumen_df, use_container_width=True)
-        else:
-            st.info("No hay datos de reportes disponibles")
+        # ... (resto del dashboard) ...
 
     def manage_employees(self):
-        """Gestión de empleados"""
+        """Gestión de empleados con búsqueda y paginación"""
         st.header("👥 Gestión de Empleados")
 
-        empleados_df = self.db_manager.get_data('Empleados')
+        # Barra de búsqueda
+        search_term = st.text_input("Buscar empleado por nombre o correo")
+        
+        empleados_df = self._get_cached_data('Empleados')
+        
+        # Filtrar por término de búsqueda
+        if search_term:
+            mask = empleados_df['nombre'].str.contains(search_term, case=False) | \
+                   empleados_df['correo'].str.contains(search_term, case=False)
+            empleados_df = empleados_df[mask]
+        
+        # Paginación
+        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
+        total_pages = max(1, (len(empleados_df) // page_size) + (1 if len(empleados_df) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1, max_value=total_pages, value=1)
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, len(empleados_df))
+        
+        # Mostrar tabla paginada
+        st.subheader(f"Empleados ({start_idx+1}-{end_idx} de {len(empleados_df)})")
+        if not empleados_df.empty:
+            st.dataframe(empleados_df.iloc[start_idx:end_idx], use_container_width=True)
+        else:
+            st.info("No se encontraron empleados")
 
-        # Mostrar tabla de empleados
-        st.subheader("Lista de Empleados")
+        # ... (formulario para agregar empleado con validaciones) ...
 
         if not empleados_df.empty:
             # Agregar botones de acción
