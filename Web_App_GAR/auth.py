@@ -1,63 +1,54 @@
 import streamlit as st
 import hashlib
-# from logger import logger
+import bcrypt
 from database import DatabaseManager
+from logger import setup_logging
+import re
 
+logger = setup_logging()
 
 class AuthManager:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
+        logger.info("AuthManager inicializado.")
 
     def hash_password(self, password: str) -> str:
-        """Genera un hash de la contraseña"""
-        return hashlib.sha256(password.encode()).hexdigest()
+        """Genera un hash seguro de la contraseña usando bcrypt"""
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password.encode(), salt).decode()
 
     def authenticate_user(self, email: str, password: str) -> dict:
         """Autentica un usuario y retorna sus datos"""
         try:
-            empleados_df = self.db_manager.get_data('Empleados')
-            print(
-                f"Empleados DataFrame: {empleados_df.shape[0]} registros cargados")
-            st.chat_message("user")
-            st.write(f"Autenticando usuario...{len(empleados_df)}" if st.session_state.get(
-                'authenticated') else "Iniciando sesión...")
-
-            # Buscar el usuario por email
-            user = empleados_df[empleados_df['correo'] == email]
-            st.write(f"Usuario encontrado: {user.shape[0]} coincidencias")
-
-            if user.empty:
-                st.write("No se encontró el usuario.")
+            empleados_df = self.db_manager.get_data('Empleados', filters={'correo': email}, limit=1)
+            
+            if empleados_df.empty:
+                logger.warning(f"Usuario no encontrado: {email}")
                 return None
 
-            user_data = user.iloc[0]
+            user_data = empleados_df.iloc[0].to_dict()
 
             # Verificar si el usuario está activo
-            if not user_data['activo']:
-                # logger.info("Usuario inactivo.")
+            if not user_data.get('activo', False):
+                logger.info(f"Usuario inactivo: {email}")
                 return None
 
-            # Para este ejemplo, usaremos una contraseña simple
-            # En producción, deberías tener contraseñas hasheadas en la BD
-            if password == "123456":  # Contraseña temporal para todos
-                # logger.info("Usuario autenticado exitosamente.")
-                st.chat_message("system").markdown(
-                    f"**Bienvenido, {user_data['nombre']}!**\n"
-                    "Tienes acceso a todas las funcionalidades de la aplicación."
-                )
-                return {
-                    'id_empleado': user_data['id_empleado'],
-                    'nombre': user_data['nombre'],
-                    'correo': user_data['correo'],
-                    'rol': user_data['rol']
-                }
+            # Verificar contraseña (suponiendo que tenemos un campo 'password_hash' en la BD)
+            if 'password_hash' in user_data and user_data['password_hash']:
+                if bcrypt.checkpw(password.encode(), user_data['password_hash'].encode()):
+                    logger.info(f"Usuario autenticado: {email}")
+                    return {
+                        'id_empleado': user_data['id_empleado'],
+                        'nombre': user_data['nombre'],
+                        'correo': user_data['correo'],
+                        'rol': user_data['rol']
+                    }
 
-            # logger.info("Contraseña incorrecta.")
-
+            logger.warning("Contraseña incorrecta.")
             return None
 
         except Exception as e:
-            st.error(f"Error en autenticación: {e}")
+            logger.error(f"Error en autenticación: {e}")
             return None
 
     def is_admin(self, user_data: dict) -> bool:
@@ -65,7 +56,7 @@ class AuthManager:
         return user_data and user_data.get('rol') == 'administrador'
 
     def login_form(self):
-        """Muestra el formulario de login"""
+        """Muestra el formulario de login con validación de email"""
         st.title("🔐 Iniciar Sesión")
 
         with st.form("login_form"):
@@ -74,26 +65,22 @@ class AuthManager:
             submit_button = st.form_submit_button("Iniciar Sesión")
 
             if submit_button:
-                if email and password:
-                    user_data = self.authenticate_user(email, password)
-                    if user_data:
-                        st.session_state['user'] = user_data
-                        st.session_state['authenticated'] = True
-                        st.success("¡Inicio de sesión exitoso!")
-                        st.rerun()
-                    else:
-                        st.error("Credenciales incorrectas o usuario inactivo")
-                else:
+                if not email or not password:
                     st.error("Por favor, complete todos los campos")
-
-        # Información de usuarios de prueba
-        st.info("""
-        **Usuarios de prueba:**
-        - empleado1@example.com (Administrador)
-        - empleado2@example.com (Empleado)
-        
-        **Contraseña:** 123456
-        """)
+                    return
+                
+                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                    st.error("Formato de correo electrónico inválido")
+                    return
+                
+                user_data = self.authenticate_user(email, password)
+                if user_data:
+                    st.session_state['user'] = user_data
+                    st.session_state['authenticated'] = True
+                    st.success("¡Inicio de sesión exitoso!")
+                    st.rerun()
+                else:
+                    st.error("Credenciales incorrectas o usuario inactivo")
 
     def logout(self):
         """Cierra la sesión del usuario"""
