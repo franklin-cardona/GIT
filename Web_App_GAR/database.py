@@ -147,9 +147,8 @@ class DatabaseManager:
 
             if filters:
                 conditions = " AND ".join(
-                    [f"{k} = :{k}" for k in filters.keys()])
+                    [f"{k} = '{v}'" for k, v in filters.items()])
                 query += f" WHERE {conditions}"
-                params = filters
 
             if limit:
                 query += f" LIMIT {limit}"

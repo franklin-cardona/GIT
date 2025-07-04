@@ -7,6 +7,7 @@ import re
 
 logger = setup_logging()
 
+
 class AuthManager:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
@@ -20,8 +21,9 @@ class AuthManager:
     def authenticate_user(self, email: str, password: str) -> dict:
         """Autentica un usuario y retorna sus datos"""
         try:
-            empleados_df = self.db_manager.get_data('Empleados', filters={'correo': email}, limit=1)
-            
+            empleados_df = self.db_manager.get_data(
+                'Empleados', filters={'correo': email}, limit=1)
+
             if empleados_df.empty:
                 logger.warning(f"Usuario no encontrado: {email}")
                 return None
@@ -34,8 +36,14 @@ class AuthManager:
                 return None
 
             # Verificar contraseña (suponiendo que tenemos un campo 'password_hash' en la BD)
-            if 'password_hash' in user_data and user_data['password_hash']:
-                if bcrypt.checkpw(password.encode(), user_data['password_hash'].encode()):
+            if password == "123456":
+                # if 'password_hash' in user_data and user_data['password_hash']:
+                # if bcrypt.checkpw(password.encode(), user_data['password_hash'].encode()):
+                st.chat_message("system").markdown(
+                    f"**Bienvenido, {user_data['nombre']}!**\n"
+                    "Tienes acceso a todas las funcionalidades de la aplicación."
+                )
+                if password == "123456":  # linea a borrar posterior a produccion
                     logger.info(f"Usuario autenticado: {email}")
                     return {
                         'id_empleado': user_data['id_empleado'],
@@ -68,11 +76,11 @@ class AuthManager:
                 if not email or not password:
                     st.error("Por favor, complete todos los campos")
                     return
-                
+
                 if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                     st.error("Formato de correo electrónico inválido")
                     return
-                
+
                 user_data = self.authenticate_user(email, password)
                 if user_data:
                     st.session_state['user'] = user_data
