@@ -14,8 +14,10 @@ try:
     PYODBC_AVAILABLE = True
 except ImportError:
     PYODBC_AVAILABLE = False
-    logger.warning("pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
-    st.warning("pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
+    logger.warning(
+        "pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
+    st.warning(
+        "pyodbc no está disponible. Solo se usará Excel como fuente de datos.")
 
 
 class DatabaseManager:
@@ -50,7 +52,6 @@ class DatabaseManager:
             self.cursor = None
             return False
 
-    
     def connect_to_sql_server(
         self,
         server: str = "LAPTOP-V6LUQTIO\\SQLEXPRESS",
@@ -62,20 +63,22 @@ class DatabaseManager:
         """Intenta conectar a SQL Server"""
         logger.info("Intenta conectar a SQL Server")
         if not PYODBC_AVAILABLE:
-            st.write("pyodbc no está disponible. Usando archivo Excel como fallback")
+            st.write(
+                "pyodbc no está disponible. Usando archivo Excel como fallback")
             print("pyodbc no está disponible. Usando archivo Excel como fallback")
-            logger.info("pyodbc no está disponible. Usando archivo Excel como fallback")
+            logger.info(
+                "pyodbc no está disponible. Usando archivo Excel como fallback")
             self.use_excel = True
             return False
 
         try:
-             
+
             connection_string = (
                 'DRIVER={ODBC Driver 17 for SQL Server};'
                 f'SERVER={server};'  # Mantén el formato con doble backslash
                 f'DATABASE={database};'
             )
-            
+
             # Añadir método de autenticación
             if username and password:
                 connection_string += f'UID={username};PWD={password};'
@@ -91,7 +94,7 @@ class DatabaseManager:
                 max_overflow=10,
                 pool_timeout=30
             )
-                
+
             # Probar la conexión
             with self.sql_engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
@@ -100,7 +103,7 @@ class DatabaseManager:
                 self.path = "MSSQL Server"
                 self.use_excel = False
                 return True
-                
+
         except Exception as e:
             print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
             st.write(f"Error de conexión: {e}")
@@ -141,15 +144,16 @@ class DatabaseManager:
         try:
             query = f"SELECT * FROM {table_name}"
             params = {}
-            
+
             if filters:
-                conditions = " AND ".join([f"{k} = :{k}" for k in filters.keys()])
+                conditions = " AND ".join(
+                    [f"{k} = :{k}" for k in filters.keys()])
                 query += f" WHERE {conditions}"
                 params = filters
-            
+
             if limit:
                 query += f" LIMIT {limit}"
-                
+
             return pd.read_sql(query, self.sql_engine, params=params)
         except Exception as e:
             logger.error(f"Error leyendo SQL: {e}")
@@ -161,18 +165,38 @@ class DatabaseManager:
             logger.warning("No hay conexión a SQLite.")
             return pd.DataFrame()
         try:
+            self.connect_to_sql_lite(self.path)
+            logger.info(f"Conectado a SQLite en {self.path}")
+            self.cursor = self.sql_lite_connection.cursor()
             query = f"SELECT * FROM {table_name}"
             params = []
-            
+
             if filters:
-                conditions = " AND ".join([f"{k} = ?" for k in filters.keys()])
+                conditions = " AND ".join(
+                    [f"{k} = '{v}'" for k, v in filters.items()])
                 query += f" WHERE {conditions}"
-                params = list(filters.values())
-            
+                # params = list(filters.values())
+
             if limit:
                 query += f" LIMIT {limit}"
-                
-            return pd.read_sql_query(query, self.sql_lite_connection, params=params)
+            logger.info(
+                f"Consulta ejecutada: {query} con parámetros {filters}")
+            self.cursor.execute(query)
+            logger.info(
+                f"Consulta ejecutada en la tabla {table_name} de SQLite")
+            # Obtener los datos
+            data = self.cursor.fetchall()
+            logger.info(
+                f"Datos obtenidos de la tabla {table_name} en SQLite [{len(data)} filas]")
+            # Leer los resultados y convertirlos a DataFrame
+            df = pd.DataFrame(data, columns=[col[0]
+                                             for col in self.cursor.description])
+            logger.info(
+                f"DataFrame creado con {len(df)} filas y {len(df.columns)} columnas")
+            self.sql_lite_connection.commit()
+            self.cursor.close()
+
+            return df
         except Exception as e:
             logger.error(f"Error leyendo SQLite: {e}")
             return pd.DataFrame()

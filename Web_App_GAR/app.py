@@ -42,6 +42,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 def main():
     # Inicializar el gestor de base de datos
     if 'db_manager' not in st.session_state:
@@ -50,7 +51,10 @@ def main():
             if not st.session_state.db_manager.connect_to_sql_lite():
                 st.session_state.db_manager.use_excel = True
                 st.info("Usando archivo Excel como base de datos.")
-    
+            else:
+                st.success("Conectado a SQLite correctamente.")
+                st.session_state.db_manager.sql_lite_connection.close()
+
     # Inicializar el gestor de autenticación
     if 'auth_manager' not in st.session_state:
         st.session_state.auth_manager = AuthManager(
@@ -104,6 +108,7 @@ def main():
             employee_interface = EmployeeInterface(
                 st.session_state.db_manager, user_data)
             employee_interface.show_employee_dashboard()
+
 
 if __name__ == "__main__":
     main()
