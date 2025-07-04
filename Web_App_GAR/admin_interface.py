@@ -8,16 +8,17 @@ from logger import setup_logging
 
 logger = setup_logging()
 
+
 class AdminInterface:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
         logger.info("AdminInterface inicializado.")
-    
+
     @st.cache_data(ttl=300)
     def _get_cached_data(_self, table_name: str, columns: list = None) -> pd.DataFrame:
         """Obtiene datos con caché para mejorar rendimiento"""
         return _self.db_manager.get_data(table_name)
-    
+
     def show_admin_dashboard(self):
         """Muestra el dashboard principal del administrador"""
         st.title("📊 Panel de Administración")
@@ -60,7 +61,8 @@ class AdminInterface:
             st.metric("Total Empleados", len(empleados_df))
 
         with col2:
-            empleados_activos = len(empleados_df[empleados_df['activo'] == True])
+            empleados_activos = len(
+                empleados_df[empleados_df['activo'] == True])
             st.metric("Empleados Activos", empleados_activos)
 
         with col3:
@@ -78,26 +80,30 @@ class AdminInterface:
 
         # Barra de búsqueda
         search_term = st.text_input("Buscar empleado por nombre o correo")
-        
+
         empleados_df = self._get_cached_data('Empleados')
-        
+
         # Filtrar por término de búsqueda
         if search_term:
             mask = empleados_df['nombre'].str.contains(search_term, case=False) | \
-                   empleados_df['correo'].str.contains(search_term, case=False)
+                empleados_df['correo'].str.contains(search_term, case=False)
             empleados_df = empleados_df[mask]
-        
+
         # Paginación
         page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
-        total_pages = max(1, (len(empleados_df) // page_size) + (1 if len(empleados_df) % page_size > 0 else 0))
-        page = st.number_input('Página', min_value=1, max_value=total_pages, value=1)
+        total_pages = max(1, (len(empleados_df) // page_size) +
+                          (1 if len(empleados_df) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1,
+                               max_value=total_pages, value=1)
         start_idx = (page - 1) * page_size
         end_idx = min(start_idx + page_size, len(empleados_df))
-        
+
         # Mostrar tabla paginada
-        st.subheader(f"Empleados ({start_idx+1}-{end_idx} de {len(empleados_df)})")
+        st.subheader(
+            f"Empleados ({start_idx+1}-{end_idx} de {len(empleados_df)})")
         if not empleados_df.empty:
-            st.dataframe(empleados_df.iloc[start_idx:end_idx], use_container_width=True)
+            st.dataframe(
+                empleados_df.iloc[start_idx:end_idx], use_container_width=True)
         else:
             st.info("No se encontraron empleados")
 
@@ -105,6 +111,11 @@ class AdminInterface:
 
         if not empleados_df.empty:
             # Agregar botones de acción
+            # for i in range(len(empleados_df.columns)):
+            #     col = st.columns([3, 2, 1, 1, 1])
+            #     with col:
+            #         st.write(empleados_df.columns[i])
+
             for idx, empleado in empleados_df.iterrows():
                 col1, col2, col3, col4, col5 = st.columns([3, 2, 1, 1, 1])
 

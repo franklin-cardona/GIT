@@ -208,3 +208,431 @@
 2025-07-04 11:37:12,773 - gestion_colaboradores - INFO - database:194 - DataFrame creado con 4 filas y 5 columnas
 2025-07-04 11:37:12,773 - gestion_colaboradores - INFO - database:194 - DataFrame creado con 4 filas y 5 columnas
 2025-07-04 11:37:12,773 - gestion_colaboradores - INFO - database:194 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:18:14,805 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:18:14,809 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:18:14,809 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:18:14,809 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:18:14,809 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:18:14,809 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:18:30,638 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:18:30,638 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:18:30,638 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:18:30,638 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:18:30,638 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:18:30,680 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:30,680 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:30,680 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:30,680 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:30,680 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:30,681 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:18:30,681 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:18:30,681 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:18:30,681 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:18:30,681 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,265 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,267 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,268 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,270 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,275 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,278 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,281 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,325 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,343 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,345 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,347 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,348 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,353 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,363 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,367 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,371 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,376 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,378 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,382 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,389 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,414 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:18:40,426 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:08,744 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:20:08,744 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:20:08,744 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:20:08,744 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:20:08,744 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-04 12:20:08,751 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:20:08,751 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:20:08,751 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:20:08,751 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:20:08,751 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-04 12:20:08,753 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:20:08,753 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:20:08,753 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:20:08,753 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:20:08,753 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-04 12:20:24,635 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:20:24,635 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:20:24,635 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:20:24,635 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:20:24,635 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-04 12:20:24,637 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:24,637 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:24,637 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:24,637 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:24,637 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:24,640 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:20:24,640 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:20:24,640 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:20:24,640 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:20:24,640 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,278 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,279 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,280 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados WHERE correo = 'empleado1@example.com' LIMIT 1 con parámetros {'correo': 'empleado1@example.com'}
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,281 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [1 filas]
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,282 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 1 filas y 5 columnas
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,284 - gestion_colaboradores - INFO - auth:47 - Usuario autenticado: empleado1@example.com
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,317 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,320 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,321 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,322 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Empleados con parámetros None
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Empleados de SQLite
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,323 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Empleados en SQLite [3 filas]
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,324 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 3 filas y 5 columnas
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,327 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,328 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Reportes con parámetros None
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,329 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Reportes de SQLite
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,330 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Reportes en SQLite [2 filas]
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,331 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 2 filas y 9 columnas
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,333 - gestion_colaboradores - INFO - database:168 - Conectado a SQLite en db_gpc.db
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,334 - gestion_colaboradores - INFO - database:181 - Consulta ejecutada: SELECT * FROM Actividades con parámetros None
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:184 - Consulta ejecutada en la tabla Actividades de SQLite
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,335 - gestion_colaboradores - INFO - database:188 - Datos obtenidos de la tabla Actividades en SQLite [4 filas]
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:40,336 - gestion_colaboradores - INFO - database:193 - DataFrame creado con 4 filas y 5 columnas
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.
+2025-07-04 12:20:47,859 - gestion_colaboradores - INFO - admin_interface:14 - AdminInterface inicializado.

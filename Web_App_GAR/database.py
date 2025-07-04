@@ -41,7 +41,7 @@ class DatabaseManager:
             with self.sql_lite_connection:
                 self.sql_lite_connection.execute("SELECT 1")
                 logger.info("Conexión exitosa a SQLite")
-                st.success("Conexión exitosa a SQLite")
+                # st.success("Conexión exitosa a SQLite")
                 self.use_excel = False
                 self.sql_engine = None
                 return True
@@ -200,7 +200,181 @@ class DatabaseManager:
             logger.error(f"Error leyendo SQLite: {e}")
             return pd.DataFrame()
 
-    # ... (resto de métodos con logging similar) ...
+    def insert_data(self, table_name: str, data: Dict[str, Any]) -> bool:
+        """Inserta datos en la tabla especificada"""
+        if self.use_excel:
+            return self._insert_data_to_excel(table_name, data)
+        elif self.sql_engine:
+            return self._insert_data_to_sql(table_name, data)
+        elif self.sql_lite_connection:
+            return self._insert_data_to_sql_lite(table_name, data)
+        else:
+            logger.warning("No hay conexión a ninguna base de datos.")
+            st.warning("No hay conexión a ninguna base de datos.")
+            return False
+
+    def _insert_data_to_excel(self, sheet_name: str, data: Dict[str, Any]) -> bool:
+        """Inserta datos en Excel (simulado - en realidad solo lee)"""
+        # Para Excel, solo simulamos la inserción ya que es complejo modificar archivos Excel
+        logger.info(
+            f"Simulando inserción en Excel - Tabla: {sheet_name}, Datos: {data}")
+        return True
+
+    def _insert_data_to_sql(self, table_name: str, data: Dict[str, Any]) -> bool:
+        """Inserta datos en SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            logger.warning("No hay conexión a SQL Server.")
+            st.warning("No hay conexión a SQL Server.")
+            return False
+        try:
+            columns = ", ".join(data.keys())
+            placeholders = ", ".join([f":{key}" for key in data.keys()])
+            query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            with self.sql_engine.connect() as connection:
+                connection.execute(text(query), data)
+                connection.commit()
+            return True
+        except Exception as e:
+            logger.error(f"Error insertando en SQL con SQLAlchemy: {e}")
+            st.error(f"Error insertando en SQL con SQLAlchemy: {e}")
+            return False
+
+    def _insert_data_to_sql_lite(self, table_name: str, data: Dict[str, Any]) -> bool:
+        """Inserta datos en SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            logger.warning("No hay conexión a SQLite.")
+            st.warning("No hay conexión a SQLite.")
+            return False
+        try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
+            columns = ", ".join(data.keys())
+            placeholders = ", ".join([f":{key}" for key in data.keys()])
+            query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            logger.info(
+                f"Ejecutando consulta SQLite: {query} con datos: {data}")
+
+            with self.sql_lite_connection:
+                self.cursor.execute(query, data)
+                self.sql_lite_connection.commit()
+                logger.info(f"Datos insertados en SQLite: {data}")
+            self.cursor.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error insertando en SQLite: {e}")
+            return False
+
+    def update_data(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+        """Actualiza datos en la tabla especificada"""
+        if self.use_excel:
+            return self._update_data_in_excel(table_name, data, condition)
+        elif self.sql_engine:
+            return self._update_data_in_sql(table_name, data, condition)
+        elif self.sql_lite_connection:
+            return self._update_data_sql_lite(table_name, data, condition)
+        else:
+            print("No hay conexión a ninguna base de datos.")
+            st.write("No hay conexión a ninguna base de datos.")
+            return False
+
+    def _update_data_in_excel(self, sheet_name: str, data: Dict[str, Any], condition: str) -> bool:
+        """Actualiza datos en Excel (simulado)"""
+        print(
+            f"Simulando actualización en Excel - Tabla: {sheet_name}, Datos: {data}, Condición: {condition}")
+        return True
+
+    def _update_data_in_sql(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+        """Actualiza datos en SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return False
+        try:
+            set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
+            query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+
+            with self.sql_engine.connect() as connection:
+                connection.execute(text(query), data)
+                connection.commit()
+            return True
+        except Exception as e:
+            print(f"Error actualizando en SQL con SQLAlchemy: {e}")
+            return False
+
+    def _update_data_sql_lite(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+        """Actualiza datos en SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return False
+        try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
+            set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
+            query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+
+            with self.sql_lite_connection:
+                self.cursor.execute(query, data)
+                self.cursor.connection.commit()
+                self.cursor.close()
+            return True
+        except Exception as e:
+            print(f"Error actualizando en SQLite: {e}")
+            return False
+
+    def delete_data(self, table_name: str, condition: str) -> bool:
+        """Elimina datos de la tabla especificada"""
+        if self.use_excel:
+            return self._delete_data_from_excel(table_name, condition)
+        elif self.sql_engine:
+            return self._delete_data_from_sql(table_name, condition)
+        elif self.sql_lite_connection:
+            return self._delete_data_from_sql_lite(table_name, condition)
+        else:
+            print("No hay conexión a ninguna base de datos.")
+            st.write("No hay conexión a ninguna base de datos.")
+            return False
+
+    def _delete_data_from_excel(self, sheet_name: str, condition: str) -> bool:
+        """Elimina datos de Excel (simulado)"""
+        print(
+            f"Simulando eliminación en Excel - Tabla: {sheet_name}, Condición: {condition}")
+        return True
+
+    def _delete_data_from_sql_lite(self, table_name: str, condition: str) -> bool:
+        """Elimina datos de SQLite usando SQLAlchemy"""
+        if not self.sql_lite_connection:
+            print("No hay conexión a SQLite.")
+            st.write("No hay conexión a SQLite.")
+            return False
+        try:
+            self.connect_to_sql_lite(self.path)
+            self.cursor = self.sql_lite_connection.cursor()
+            query = f"DELETE FROM {table_name} WHERE {condition}"
+            with self.sql_lite_connection:
+                self.cursor.execute(query)
+                self.sql_lite_connection.commit()
+                self.cursor.close()
+            return True
+        except Exception as e:
+            print(f"Error eliminando en SQLite: {e}")
+            return False
+
+    def _delete_data_from_sql(self, table_name: str, condition: str) -> bool:
+        """Elimina datos de SQL Server usando SQLAlchemy"""
+        if not self.sql_engine:
+            print("No hay conexión a SQL Server.")
+            st.write("No hay conexión a SQL Server.")
+            return False
+        try:
+            query = f"DELETE FROM {table_name} WHERE {condition}"
+            with self.sql_engine.connect() as connection:
+                connection.execute(query)
+                connection.commit()
+            return True
+        except Exception as e:
+            print(f"Error eliminando en SQL con SQLAlchemy: {e}")
+            return False
 
     def close_connection(self):
         """Cierra la conexión a la base de datos"""
