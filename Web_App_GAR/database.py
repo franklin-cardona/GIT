@@ -142,7 +142,7 @@ class DatabaseManager:
             logger.warning("No hay conexión a SQL Server.")
             return pd.DataFrame()
         try:
-            query = f"SELECT TOP 1* FROM {table_name}"
+            query = f"SELECT TOP 1 * FROM {table_name}"
             params = {}
 
             if filters:
