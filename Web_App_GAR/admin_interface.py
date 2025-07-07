@@ -207,38 +207,34 @@ class AdminInterface:
             st.info("No hay empleados registrados")
 
         # Formulario para agregar nuevo empleado
+        if st.button("➕ Agregar Nuevo Registro"):
+            st.session_state["mostrar_formulario_agregar"] = not st.session_state.get(
+                "mostrar_formulario_agregar", False)
 
-        st.subheader("➕ Agregar Nuevo Empleado")
-        with st.form("add_employee"):
-            col1, col2 = st.columns(2)
-            with col1:
-                nombre = st.text_input("Nombre")
-                correo = st.text_input("Correo")
-            with col2:
-                rol = st.selectbox("Rol", ["empleado", "administrador"])
-                activo = st.checkbox("Activo", value=True)
+        if st.session_state.get("mostrar_formulario_agregar", False):
+            st.subheader("Formulario de Nuevo Registro")
+            with st.form("add_generic_record"):
+                nuevo_registro = {}
+                for col in empleados_df.columns:
+                    if col.lower() == "id" or col.startswith("id_"):
+                        continue  # Omitir campos ID si se generan automáticamente
+                    valor = empleados_df[col].iloc[0] if not empleados_df.empty else ""
+                    if isinstance(valor, bool):
+                        nuevo_registro[col] = st.checkbox(col, value=True)
+                    elif isinstance(valor, str) and valor.lower() in ["sí", "no"]:
+                        nuevo_registro[col] = st.selectbox(col, ["Sí", "No"])
+                    else:
+                        nuevo_registro[col] = st.text_input(
+                            col, value=str(valor))
 
-            if st.form_submit_button("Agregar Empleado"):
-                if nombre and correo:
-                    # Obtener el próximo ID
-                    # max_id = empleados_df['id_empleado'].max() if not empleados_df.empty else 0
-                    # nuevo_id = max_id + 1
-
-                    nuevo_empleado = {
-                        # 'id_empleado': nuevo_id,
-                        'nombre': nombre,
-                        'correo': correo,
-                        'rol': rol,
-                        'activo': activo
-                    }
-
-                    if self.db_manager.insert_data('Empleados', nuevo_empleado):
-                        st.success("Empleado agregado exitosamente")
+                if st.form_submit_button("Agregar Registro"):
+                    if self.db_manager.insert_data('Empleados', nuevo_registro):
+                        st.success("Registro agregado exitosamente")
+                        st.session_state["mostrar_formulario_agregar"] = False
+                        empleados_df = self._get_cached_data('Empleados')
                         st.rerun()
                     else:
-                        st.error("Error al agregar empleado")
-                else:
-                    st.error("Complete todos los campos obligatorios")
+                        st.error("Error al agregar registro")
 
     def manage_contracts(self):
         """Gestión de contratos"""

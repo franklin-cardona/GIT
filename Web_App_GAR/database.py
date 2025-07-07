@@ -142,7 +142,7 @@ class DatabaseManager:
             logger.warning("No hay conexión a SQL Server.")
             return pd.DataFrame()
         try:
-            query = f"SELECT * FROM {table_name}"
+            query = f"SELECT TOP 1* FROM {table_name}"
             params = {}
 
             if filters:
@@ -150,8 +150,8 @@ class DatabaseManager:
                     [f"{k} = '{v}'" for k, v in filters.items()])
                 query += f" WHERE {conditions}"
 
-            if limit:
-                query += f" LIMIT {limit}"
+            # if limit:
+            #     query += f" LIMIT {limit}"
 
             return pd.read_sql(query, self.sql_engine, params=params)
         except Exception as e:
