@@ -98,48 +98,98 @@ class AdminInterface:
         start_idx = (page - 1) * page_size
         end_idx = min(start_idx + page_size, len(empleados_df))
 
-        # Mostrar tabla paginada
-        st.subheader(
-            f"Empleados ({start_idx+1}-{end_idx} de {len(empleados_df)})")
+        empleados_df = empleados_df.iloc[start_idx:end_idx]
+
+        # Mostrar tabla con botones Editar y Eliminar
         if not empleados_df.empty:
-            st.dataframe(
-                empleados_df.iloc[start_idx:end_idx], use_container_width=True)
-        else:
-            st.info("No se encontraron empleados")
+            st.title("Tabla de Empleados")
 
-        # ... (formulario para agregar empleado con validaciones) ...
+            # Mostrar encabezados
+            # +2 para Editar y Eliminar
+            cols = st.columns(len(empleados_df.columns) + 2)
+            for i, col in enumerate(empleados_df.columns):
+                cols[i].markdown(f"**{col}**")
+            cols[-2].markdown("**Editar**")
+            cols[-1].markdown("**Eliminar**")
 
-        if not empleados_df.empty:
-            # Agregar botones de acción
-            # for i in range(len(empleados_df.columns)):
-            #     col = st.columns([3, 2, 1, 1, 1])
-            #     with col:
-            #         st.write(empleados_df.columns[i])
+            # Mostrar filas con botones
+            for index, empleado in empleados_df.iterrows():
+                cols = st.columns(len(empleado) + 2)
+                for i, value in enumerate(empleado):
+                    cols[i].write(value)
 
-            for idx, empleado in empleados_df.iterrows():
-                col1, col2, col3, col4, col5 = st.columns([3, 2, 1, 1, 1])
+                # Botón Editar
+                if cols[-2].button("✏️", key=f"edit_{empleado['id_empleado']}"):
+                    edit_key = f'editing_employee_{empleado["id_empleado"]}'
+                    if st.session_state.get(edit_key, False):
+                        # Si ya está en modo edición, cancelar
+                        st.session_state[edit_key] = False
+                        st.session_state['edit_index'] = None
+                        st.success("Edición cancelada")
+                        st.rerun()
+                    else:
+                        # Activar modo edición
+                        st.session_state[edit_key] = True
+                        st.session_state[f"edit_index"] = index
 
-                with col1:
-                    st.write(empleado['nombre'])
-                with col2:
-                    st.write(empleado['correo'])
-                with col3:
-                    st.write(empleado['rol'])
-                with col4:
-                    if st.button("✏️", key=f"edit_{empleado['id_empleado']}"):
-                        st.session_state[f'editing_employee_{empleado["id_empleado"]}'] = True
-                with col5:
-                    if st.button("🗑️", key=f"delete_{empleado['id_empleado']}"):
-                        st.session_state.show_confirm = True
-                        st.session_state.employee_to_delete = empleado['id_empleado']
+                # Botón Eliminar
+                if cols[-1].button("🗑️", key=f"delete_{empleado['id_empleado']}"):
+                    st.session_state.show_confirm = True
+                    st.session_state.employee_to_delete = empleado['id_empleado']
+                    st.warning(f"Eliminar fila {index}: {empleado.to_dict()}")
+
+                if st.session_state.get(f'editing_employee_{empleado["id_empleado"]}', False):
+                    # Si estamos editando, mostrar formulario de edición
+
+                    st.subheader("Editar Empleado")
+                    logger.info(
+                        f"Editando empleado...{st.session_state[f'edit_index']}")
+                    row = empleados_df.loc[st.session_state[f'edit_index']]
+                    logger.info(f"Editando empleado: {row.to_dict()}")
+                    # Formulario para editar empleado
+                    with st.form(f"edit_employee_{empleado['id_empleado']}"):
+                        logger.info(
+                            f"Formulario de edición para empleado: {empleado['id_empleado']}")
+                        updated_values = {}
+                        # Excluir la primera columna (ID)
+                        for col in empleados_df.columns[1:]:
+                            value = row[col]
+                            if isinstance(value, str) and value.lower() in ["sí", "no"]:
+                                updated_values[col] = st.selectbox(
+                                    col, ["Sí", "No"], index=["Sí", "No"].index(value))
+                            else:
+                                updated_values[col] = st.text_input(
+                                    col, value=value)
+                        logger.info(f"Valores registrados: {updated_values}")
+
+                        guardar_cambios = st.form_submit_button(
+                            "Guardar Cambios")
+
+                        cancelar_edicion = st.form_submit_button(
+                            "Cancelar")
+
+                        if guardar_cambios:
+                            if self.db_manager.update_data('Empleados', updated_values):
+                                st.success("Empleado actualizado exitosamente")
+                            else:
+                                st.error("Error al actualizar empleado")
+                            st.session_state[f'editing_employee_{empleado["id_empleado"]}'] = False
+                            # Limpiar el índice de edición
+                            st.session_state['edit_index'] = None
+                            st.rerun()
+
+                        if cancelar_edicion:
+                            st.session_state[f'editing_employee_{empleado["id_empleado"]}'] = False
+                            st.success("Edición cancelada")
+                            st.session_state['edit_index'] = None
+                            st.rerun()
 
                 if st.session_state.get('show_confirm', False) and st.session_state.get('employee_to_delete') == empleado['id_empleado']:
                     with st.form(f"confirm_delete_{empleado['id_empleado']}"):
                         st.warning(
                             f"¿Estás seguro de eliminar a {empleado['nombre']}?")
                         eliminar = st.form_submit_button("Sí, Eliminar")
-                        cancelar = st.button(
-                            "Cancelar", key=f"cancel_delete_{empleado['id_empleado']}")
+                        cancelar = st.form_submit_button("Cancelar")
                         if eliminar:
                             if self.db_manager.delete_data('Empleados', f"id_empleado={empleado['id_empleado']}"):
                                 st.success("Empleado eliminado exitosamente")
@@ -153,46 +203,11 @@ class AdminInterface:
                             del st.session_state['employee_to_delete']
                             st.rerun()
 
-                if st.session_state.get(f'editing_employee_{empleado["id_empleado"]}', False):
-                    # Formulario para editar empleado
-                    with st.form(f"edit_employee_{empleado['id_empleado']}"):
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            nombre = st.text_input(
-                                "Nombre", value=empleado['nombre'])
-                            correo = st.text_input(
-                                "Correo", value=empleado['correo'])
-                        with col2:
-                            rol = st.selectbox("Rol", [
-                                               "empleado", "administrador"], index=0 if empleado['rol'] == 'empleado' else 1)
-                            activo = st.checkbox(
-                                "Activo", value=empleado['activo'])
-
-                        if st.form_submit_button("Guardar Cambios"):
-                            updated_data = {
-                                'id_empleado': empleado['id_empleado'],
-                                'nombre': nombre,
-                                'correo': correo,
-                                'rol': rol,
-                                'activo': activo
-                            }
-                            if self.db_manager.update_data('Empleados', updated_data):
-                                st.success("Empleado actualizado exitosamente")
-                                st.session_state[f'editing_employee_{empleado["id_empleado"]}'] = False
-                                st.rerun()
-                            else:
-                                st.error("Error al actualizar empleado")
-                            st.success("Edición cancelada")
-                            st.session_state[f'editing_employee_{empleado["id_empleado"]}'] = False
-                            # Limpiar el estado de edición
-                            del st.session_state[f'editing_employee_{empleado["id_empleado"]}']
-                            st.rerun()
-                            # Limpiar el estado de edición
-                            del st.session_state[f'editing_employee_{empleado["id_empleado"]}']
         else:
             st.info("No hay empleados registrados")
 
         # Formulario para agregar nuevo empleado
+
         st.subheader("➕ Agregar Nuevo Empleado")
         with st.form("add_employee"):
             col1, col2 = st.columns(2)
