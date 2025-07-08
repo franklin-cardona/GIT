@@ -106,7 +106,6 @@ class DatabaseManager:
 
         except Exception as e:
             print(f"Error conectando a SQL Server con SQLAlchemy: {e}")
-            st.write(f"Error de conexión: {e}")
             logger.error(f"Error de conexión: {e}")
             self.sql_engine = None
             return False

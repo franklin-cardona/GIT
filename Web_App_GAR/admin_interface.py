@@ -289,7 +289,7 @@ class AdminInterface:
 
     def manage_contracts(self):
         """Gestión de contratos con búsqueda y paginación"""
-        st.header("👥 Gestión de Contratos")
+        st.header("📄 Gestión de Contratos")
 
         # Barra de búsqueda
         search_term = st.text_input("Buscar contrato por nombre")
@@ -382,7 +382,7 @@ class AdminInterface:
 
     def manage_activities(self):
         """Gestión de actividads con búsqueda y paginación"""
-        st.header("👥 Gestión de Actividades")
+        st.header("📋 Gestión de Actividades")
 
         # Barra de búsqueda
         search_term = st.text_input(
