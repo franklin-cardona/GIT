@@ -143,7 +143,6 @@ class DatabaseManager:
             return pd.DataFrame()
         try:
             query = f"SELECT TOP 1 * FROM {table_name}"
-            params = {}
 
             if filters:
                 conditions = " AND ".join(
@@ -153,7 +152,7 @@ class DatabaseManager:
             # if limit:
             #     query += f" LIMIT {limit}"
 
-            return pd.read_sql(query, self.sql_engine, params=params)
+            return pd.read_sql(query, self.sql_engine)
         except Exception as e:
             logger.error(f"Error leyendo SQL: {e}")
             return pd.DataFrame()
@@ -168,13 +167,11 @@ class DatabaseManager:
             logger.info(f"Conectado a SQLite en {self.path}")
             self.cursor = self.sql_lite_connection.cursor()
             query = f"SELECT * FROM {table_name}"
-            params = []
 
             if filters:
                 conditions = " AND ".join(
                     [f"{k} = '{v}'" for k, v in filters.items()])
                 query += f" WHERE {conditions}"
-                # params = list(filters.values())
 
             if limit:
                 query += f" LIMIT {limit}"
@@ -264,7 +261,7 @@ class DatabaseManager:
             logger.error(f"Error insertando en SQLite: {e}")
             return False
 
-    def update_data(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+    def update_data(self, table_name: str, data: Dict[str, Any], condition: Dict[str, Any]) -> bool:
         """Actualiza datos en la tabla especificada"""
         if self.use_excel:
             return self._update_data_in_excel(table_name, data, condition)
@@ -277,21 +274,25 @@ class DatabaseManager:
             st.write("No hay conexión a ninguna base de datos.")
             return False
 
-    def _update_data_in_excel(self, sheet_name: str, data: Dict[str, Any], condition: str) -> bool:
+    def _update_data_in_excel(self, sheet_name: str, data: Dict[str, Any], condition: Dict[str, Any]) -> bool:
         """Actualiza datos en Excel (simulado)"""
         print(
             f"Simulando actualización en Excel - Tabla: {sheet_name}, Datos: {data}, Condición: {condition}")
         return True
 
-    def _update_data_in_sql(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+    def _update_data_in_sql(self, table_name: str, data: Dict[str, Any], condition: Dict[str, Any]) -> bool:
         """Actualiza datos en SQL Server usando SQLAlchemy"""
         if not self.sql_engine:
             print("No hay conexión a SQL Server.")
             st.write("No hay conexión a SQL Server.")
             return False
         try:
-            set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
-            query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+            set_clause = ", ".join([f"{k} = '{v}'" for k, v in data.items()])
+            logger.info(set_clause)
+            condiciones = " AND ".join(
+                [f"{k} = '{v}'" for k, v in condition.items()])
+            query = f"UPDATE {table_name} SET {set_clause} WHERE {condiciones}"
+            logger.info(query)
 
             with self.sql_engine.connect() as connection:
                 connection.execute(text(query), data)
@@ -301,7 +302,7 @@ class DatabaseManager:
             print(f"Error actualizando en SQL con SQLAlchemy: {e}")
             return False
 
-    def _update_data_sql_lite(self, table_name: str, data: Dict[str, Any], condition: str) -> bool:
+    def _update_data_sql_lite(self, table_name: str, data: Dict[str, Any], condition: Dict[str, Any]) -> bool:
         """Actualiza datos en SQLite usando SQLAlchemy"""
         if not self.sql_lite_connection:
             print("No hay conexión a SQLite.")
@@ -309,17 +310,21 @@ class DatabaseManager:
             return False
         try:
             self.connect_to_sql_lite(self.path)
+            logger.info(f"Conectado a SQLite en {self.path}")
             self.cursor = self.sql_lite_connection.cursor()
-            set_clause = ", ".join([f"{key} = :{key}" for key in data.keys()])
-            query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+            set_clause = ", ".join([f"{k} = '{v}'" for k, v in data.items()])
+            condiciones = " AND ".join(
+                [f"{k} = '{v}'" for k, v in condition.items()])
+            query = f"UPDATE {table_name} SET {set_clause} WHERE {condiciones}"
+            logger.info(query)
 
             with self.sql_lite_connection:
-                self.cursor.execute(query, data)
+                self.cursor.execute(query)
                 self.cursor.connection.commit()
                 self.cursor.close()
             return True
         except Exception as e:
-            print(f"Error actualizando en SQLite: {e}")
+            logger.info(f"Error actualizando en SQLite: {e}")
             return False
 
     def delete_data(self, table_name: str, condition: str) -> bool:
