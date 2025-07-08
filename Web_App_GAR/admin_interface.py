@@ -264,7 +264,7 @@ class AdminInterface:
 
         # Formulario para agregar nuevo empleado
         self.mostrar_formulario_agregar(
-            nombre_tabla="Empleado", df=empleados_df)
+            nombre_tabla="Empleados", df=empleados_df)
 
     def manage_contracts(self):
         """Gestión de contratos"""

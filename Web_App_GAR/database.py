@@ -225,7 +225,7 @@ class DatabaseManager:
             return False
         try:
             columns = ", ".join(data.keys())
-            placeholders = ", ".join([f":{key}" for key in data.keys()])
+            placeholders = ", ".join([f"'{v}'" for v in data.values()])
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
             with self.sql_engine.connect() as connection:
                 connection.execute(text(query), data)
@@ -246,10 +246,10 @@ class DatabaseManager:
             self.connect_to_sql_lite(self.path)
             self.cursor = self.sql_lite_connection.cursor()
             columns = ", ".join(data.keys())
-            placeholders = ", ".join([f":{key}" for key in data.keys()])
+            placeholders = ", ".join([f"'{v}'" for v in data.values()])
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
             logger.info(
-                f"Ejecutando consulta SQLite: {query} con datos: {data}")
+                f"Ejecutando consulta SQLite: {query}")
 
             with self.sql_lite_connection:
                 self.cursor.execute(query, data)

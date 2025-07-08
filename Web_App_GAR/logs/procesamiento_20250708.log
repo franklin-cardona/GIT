@@ -1,0 +1,35 @@
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:30 - DatabaseManager inicializado.
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-08 12:34:20,414 - gestion_colaboradores - INFO - database:64 - Intenta conectar a SQL Server
+2025-07-08 12:34:20,421 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-08 12:34:20,421 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-08 12:34:20,421 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-08 12:34:20,421 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-08 12:34:20,421 - gestion_colaboradores - INFO - database:87 - connection_string: DRIVER={ODBC Driver 17 for SQL Server};SERVER=LAPTOP-V6LUQTIO\SQLEXPRESS;DATABASE=db_gpc;Trusted_Connection=yes;
+2025-07-08 12:34:36,313 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-08 12:34:36,313 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-08 12:34:36,313 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-08 12:34:36,313 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-08 12:34:36,313 - gestion_colaboradores - ERROR - database:110 - Error de conexión: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]SQL Server Network Interfaces: Error Locating Server/Instance Specified [xFFFFFFFF].  (-1) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (-1)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - database:43 - Conexión exitosa a SQLite
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
+2025-07-08 12:34:36,371 - gestion_colaboradores - INFO - auth:14 - AuthManager inicializado.
