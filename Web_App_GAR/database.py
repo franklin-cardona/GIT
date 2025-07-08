@@ -327,7 +327,7 @@ class DatabaseManager:
             logger.info(f"Error actualizando en SQLite: {e}")
             return False
 
-    def delete_data(self, table_name: str, condition: str) -> bool:
+    def delete_data(self, table_name: str, condition: Dict[str, Any]) -> bool:
         """Elimina datos de la tabla especificada"""
         if self.use_excel:
             return self._delete_data_from_excel(table_name, condition)
@@ -340,13 +340,13 @@ class DatabaseManager:
             st.write("No hay conexión a ninguna base de datos.")
             return False
 
-    def _delete_data_from_excel(self, sheet_name: str, condition: str) -> bool:
+    def _delete_data_from_excel(self, sheet_name: str, condition: Dict[str, Any]) -> bool:
         """Elimina datos de Excel (simulado)"""
         print(
             f"Simulando eliminación en Excel - Tabla: {sheet_name}, Condición: {condition}")
         return True
 
-    def _delete_data_from_sql_lite(self, table_name: str, condition: str) -> bool:
+    def _delete_data_from_sql_lite(self, table_name: str, condition: Dict[str, Any]) -> bool:
         """Elimina datos de SQLite usando SQLAlchemy"""
         if not self.sql_lite_connection:
             print("No hay conexión a SQLite.")
@@ -355,7 +355,10 @@ class DatabaseManager:
         try:
             self.connect_to_sql_lite(self.path)
             self.cursor = self.sql_lite_connection.cursor()
-            query = f"DELETE FROM {table_name} WHERE {condition}"
+            condiciones = " AND ".join(
+                [f"{k} = '{v}'" for k, v in condition.items()])
+            query = f"DELETE FROM {table_name} WHERE {condiciones}"
+            logger.info(query)
             with self.sql_lite_connection:
                 self.cursor.execute(query)
                 self.sql_lite_connection.commit()
@@ -365,16 +368,19 @@ class DatabaseManager:
             print(f"Error eliminando en SQLite: {e}")
             return False
 
-    def _delete_data_from_sql(self, table_name: str, condition: str) -> bool:
+    def _delete_data_from_sql(self, table_name: str, condition: Dict[str, Any]) -> bool:
         """Elimina datos de SQL Server usando SQLAlchemy"""
         if not self.sql_engine:
             print("No hay conexión a SQL Server.")
             st.write("No hay conexión a SQL Server.")
             return False
         try:
-            query = f"DELETE FROM {table_name} WHERE {condition}"
+            condiciones = " AND ".join(
+                [f"{k} = '{v}'" for k, v in condition.items()])
+            query = f"DELETE FROM {table_name} WHERE {condiciones}"
+            logger.info(query)
             with self.sql_engine.connect() as connection:
-                connection.execute(query)
+                connection.execute(text(query))
                 connection.commit()
             return True
         except Exception as e:

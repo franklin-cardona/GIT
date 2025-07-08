@@ -113,10 +113,14 @@ class AdminInterface:
                         st.rerun()
                     else:
                         st.error("Error al agregar registro")
+                cancelar = st.form_submit_button("Cancelar")
+                if cancelar:
+                    st.session_state[toggle_key] = None
+                    st.rerun()
 
     def mostrar_formulario_edicion(self, nombre_tabla: str, df: pd.DataFrame, edit_key: str, row):
         edit_key = edit_key
-        logger.info(f"{edit_key} => {row.to_dict()}")
+        logger.info(f"editando: {edit_key} => {row.to_dict()}")
         st.subheader(edit_key)
         valores_actualizados = {}
         condiciones = {}
@@ -159,6 +163,36 @@ class AdminInterface:
             st.session_state[edit_key] = False
             st.info("Edición cancelada")
             st.rerun()
+
+    def mostrar_formulario_eliminar(self, nombre_tabla: str, df: pd.DataFrame, edit_key: str, row):
+        edit_key = edit_key
+        logger.info(f"eliminar a : {edit_key} => {row.to_dict()}")
+        st.subheader(edit_key)
+        condiciones = {}
+
+        for col in df.columns:
+            valor_actual = row[col]
+
+            if col.lower() == "id" or col.startswith("id_"):
+                # Usar como condición para actualizar
+                condiciones[col] = valor_actual
+                continue
+
+            eliminar = st.form_submit_button("Sí, Eliminar")
+            cancelar = st.form_submit_button("Cancelar")
+            if eliminar:
+                if self.db_manager.delete_data(nombre_tabla, condiciones):
+                    st.success("Registro eliminado exitosamente")
+                    st.session_state.show_confirm = False
+                    del st.session_state.delete_id
+                    st.cache_data.clear()
+                    st.rerun()
+                else:
+                    st.error("Error al eliminar empleado")
+            if cancelar:
+                st.session_state.show_confirm = False
+                del st.session_state.delete_id
+                st.rerun()
 
     def manage_employees(self):
         """Gestión de empleados con búsqueda y paginación"""
@@ -221,7 +255,7 @@ class AdminInterface:
                 # Botón Eliminar
                 if cols[-1].button("🗑️", key=f"delete_{empleado['id_empleado']}"):
                     st.session_state.show_confirm = True
-                    st.session_state.employee_to_delete = empleado['id_empleado']
+                    st.session_state.delete_id = empleado['id_empleado']
                     st.warning(f"Eliminar fila {index}: {empleado.to_dict()}")
 
                 if st.session_state.get(f'Editando_Empleado_{empleado["id_empleado"]}', False):
@@ -239,25 +273,12 @@ class AdminInterface:
                         self.mostrar_formulario_edicion(
                             "Empleados", empleados_df, f'Editando_Empleado_{empleado["id_empleado"]}', empleado)
 
-                if st.session_state.get('show_confirm', False) and st.session_state.get('employee_to_delete') == empleado['id_empleado']:
+                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == empleado['id_empleado']:
                     with st.form(f"confirm_delete_{empleado['id_empleado']}"):
-
                         st.warning(
                             f"¿Estás seguro de eliminar a {empleado['nombre']}?")
-                        eliminar = st.form_submit_button("Sí, Eliminar")
-                        cancelar = st.form_submit_button("Cancelar")
-                        if eliminar:
-                            if self.db_manager.delete_data('Empleados', f"id_empleado={empleado['id_empleado']}"):
-                                st.success("Empleado eliminado exitosamente")
-                                st.session_state.show_confirm = False
-                                del st.session_state['employee_to_delete']
-                                st.rerun()
-                            else:
-                                st.error("Error al eliminar empleado")
-                        if cancelar:
-                            st.session_state.show_confirm = False
-                            del st.session_state['employee_to_delete']
-                            st.rerun()
+                        self.mostrar_formulario_eliminar(
+                            "Empleados", empleados_df,  f'Eliminando_Empleado_{empleado["id_empleado"]}', empleado)
 
         else:
             st.info("No hay empleados registrados")
@@ -267,95 +288,193 @@ class AdminInterface:
             nombre_tabla="Empleados", df=empleados_df)
 
     def manage_contracts(self):
-        """Gestión de contratos"""
-        st.header("📄 Gestión de Contratos")
+        """Gestión de contratos con búsqueda y paginación"""
+        st.header("👥 Gestión de Contratos")
 
-        contratos_df = self.db_manager.get_data('Contratos')
-        empleados_df = self.db_manager.get_data('Empleados')
+        # Barra de búsqueda
+        search_term = st.text_input("Buscar contrato por nombre")
 
-        # Mostrar contratos existentes
+        contratos_df = self._get_cached_data('Contratos')
+
+        # Filtrar por término de búsqueda
+        if search_term:
+            mask = contratos_df['nombre_contrato'].str.contains(
+                search_term, case=False)
+            contratos_df = contratos_df[mask]
+
+        # Paginación
+        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
+        total_pages = max(1, (len(contratos_df) // page_size) +
+                          (1 if len(contratos_df) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1,
+                               max_value=total_pages, value=1)
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, len(contratos_df))
+
+        contratos_df = contratos_df.iloc[start_idx:end_idx]
+
+        # Mostrar tabla con botones Editar y Eliminar
         if not contratos_df.empty:
-            st.subheader("Contratos Existentes")
-            st.dataframe(contratos_df, use_container_width=True)
+            st.title("Tabla de Contratos")
 
-        # Formulario para nuevo contrato
-        st.subheader("➕ Nuevo Contrato")
-        with st.form("add_contract"):
-            nombre_contrato = st.text_input("Nombre del Contrato")
-            col1, col2 = st.columns(2)
-            with col1:
-                fecha_inicio = st.date_input("Fecha de Inicio")
-            with col2:
-                fecha_fin = st.date_input("Fecha de Fin")
+            # Mostrar encabezados
+            # +2 para Editar y Eliminar
+            cols = st.columns(len(contratos_df.columns) + 2)
+            for i, col in enumerate(contratos_df.columns):
+                cols[i].markdown(f"**{col}**")
+            cols[-2].markdown("**Editar**")
+            cols[-1].markdown("**Eliminar**")
 
-            if not empleados_df.empty:
-                empleado_options = {f"{emp['nombre']} ({emp['correo']})": emp['id_empleado']
-                                    for _, emp in empleados_df.iterrows()}
-                empleado_seleccionado = st.selectbox(
-                    "Empleado Asignado", list(empleado_options.keys()))
+            # Mostrar filas con botones
+            for index, contrato in contratos_df.iterrows():
+                cols = st.columns(len(contrato) + 2)
+                for i, value in enumerate(contrato):
+                    cols[i].write(value)
 
-            if st.form_submit_button("Crear Contrato"):
-                if nombre_contrato and fecha_inicio and fecha_fin:
-                    # max_id = contratos_df['id_contrato'].max(
-                    # ) if not contratos_df.empty else 0
-                    nuevo_contrato = {
-                        # 'id_contrato': max_id + 1,
-                        'nombre_contrato': nombre_contrato,
-                        'fecha_inicio': fecha_inicio,
-                        'fecha_fin': fecha_fin,
-                        'id_empleado': empleado_options[empleado_seleccionado]
-                    }
-
-                    if self.db_manager.insert_data('Contratos', nuevo_contrato):
-                        st.success("Contrato creado exitosamente")
+                # Botón Editar
+                if cols[-2].button("✏️", key=f"edit_{contrato['id_contrato']}"):
+                    edit_key = f'Editando_Contrato_{contrato["id_contrato"]}'
+                    if st.session_state.get(edit_key, False):
+                        # Si ya está en modo edición, cancelar
+                        st.session_state[edit_key] = False
+                        st.session_state['edit_index'] = None
+                        st.success("Edición cancelada")
                         st.rerun()
                     else:
-                        st.error("Error al crear contrato")
+                        # Activar modo edición
+                        st.session_state[edit_key] = True
+                        st.session_state[f"edit_index"] = index
+
+                # Botón Eliminar
+                if cols[-1].button("🗑️", key=f"delete_{contrato['id_contrato']}"):
+                    st.session_state.show_confirm = True
+                    st.session_state.delete_id = contrato['id_contrato']
+                    st.warning(f"Eliminar fila {index}: {contrato.to_dict()}")
+
+                if st.session_state.get(f'Editando_Contrato_{contrato["id_contrato"]}', False):
+                    # Si estamos editando, mostrar formulario de edición
+
+                    st.subheader("Editar Contrato")
+                    logger.info(
+                        f"Editando contrato...{st.session_state[f'edit_index']}")
+                    # logger.info(f"Editando contrato: {row.to_dict()}")
+                    # # Formulario para editar contrato
+                    with st.form(f"edit_employee_{contrato['id_contrato']}"):
+
+                        logger.info(
+                            f"Formulario de edición para contrato: {contrato['id_contrato']}")
+                        self.mostrar_formulario_edicion(
+                            "Contratos", contratos_df, f'Editando_Contrato_{contrato["id_contrato"]}', contrato)
+
+                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == contrato['id_contrato']:
+                    with st.form(f"confirm_delete_{contrato['id_contrato']}"):
+                        st.warning(
+                            f"¿Estás seguro de eliminar a {contrato['nombre']}?")
+                        self.mostrar_formulario_eliminar(
+                            "Contratos", contratos_df,  f'Eliminando_Contrato_{contrato["id_contrato"]}', contrato)
+
+        else:
+            st.info("No hay contratos registrados")
+
+        # Formulario para agregar nuevo contrato
+        self.mostrar_formulario_agregar(
+            nombre_tabla="Contratos", df=contratos_df)
 
     def manage_activities(self):
-        """Gestión de actividades"""
-        st.header("📋 Gestión de Actividades")
+        """Gestión de actividads con búsqueda y paginación"""
+        st.header("👥 Gestión de Actividades")
 
-        actividades_df = self.db_manager.get_data('Actividades')
-        contratos_df = self.db_manager.get_data('Contratos')
+        # Barra de búsqueda
+        search_term = st.text_input(
+            "Buscar actividad por numero o descripción")
 
-        # Mostrar actividades existentes
+        actividades_df = self._get_cached_data('Actividades')
+
+        # Filtrar por término de búsqueda
+        if search_term:
+            mask = actividades_df['Nro'].astype(str).str.contains(search_term, case=False) | \
+                actividades_df['descripcion'].str.contains(
+                search_term, case=False)
+            actividades_df = actividades_df[mask]
+
+        # Paginación
+        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
+        total_pages = max(1, (len(actividades_df) // page_size) +
+                          (1 if len(actividades_df) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1,
+                               max_value=total_pages, value=1)
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, len(actividades_df))
+
+        actividades_df = actividades_df.iloc[start_idx:end_idx]
+
+        # Mostrar tabla con botones Editar y Eliminar
         if not actividades_df.empty:
-            st.subheader("Actividades Existentes")
-            st.dataframe(actividades_df, use_container_width=True)
+            st.title("Tabla de Actividades")
 
-        # Formulario para nueva actividad
-        st.subheader("➕ Nueva Actividad")
-        with st.form("add_activity"):
-            col1, col2 = st.columns(2)
-            with col1:
-                nro = st.number_input("Número", min_value=1, step=1)
-                descripcion = st.text_area("Descripción")
-            with col2:
-                if not contratos_df.empty:
-                    contrato_options = {contrato['nombre_contrato']: contrato['id_contrato']
-                                        for _, contrato in contratos_df.iterrows()}
-                    contrato_seleccionado = st.selectbox(
-                        "Contrato", list(contrato_options.keys()))
-                porcentaje = st.slider("Porcentaje", 0, 100, 0)
+            # Mostrar encabezados
+            # +2 para Editar y Eliminar
+            cols = st.columns(len(actividades_df.columns) + 2)
+            for i, col in enumerate(actividades_df.columns):
+                cols[i].markdown(f"**{col}**")
+            cols[-2].markdown("**Editar**")
+            cols[-1].markdown("**Eliminar**")
 
-            if st.form_submit_button("Crear Actividad"):
-                if descripcion and contrato_seleccionado:
-                    # max_id = actividades_df['id_actividad'].max(
-                    # ) if not actividades_df.empty else 0
-                    nueva_actividad = {
-                        # 'id_actividad': max_id + 1,
-                        'Nro': nro,
-                        'descripcion': descripcion,
-                        'id_contrato': contrato_options[contrato_seleccionado],
-                        'porcentaje': porcentaje
-                    }
+            # Mostrar filas con botones
+            for index, actividad in actividades_df.iterrows():
+                cols = st.columns(len(actividad) + 2)
+                for i, value in enumerate(actividad):
+                    cols[i].write(value)
 
-                    if self.db_manager.insert_data('Actividades', nueva_actividad):
-                        st.success("Actividad creada exitosamente")
+                # Botón Editar
+                if cols[-2].button("✏️", key=f"edit_{actividad['id_actividad']}"):
+                    edit_key = f'Editando_Actividad_{actividad["id_actividad"]}'
+                    if st.session_state.get(edit_key, False):
+                        # Si ya está en modo edición, cancelar
+                        st.session_state[edit_key] = False
+                        st.session_state['edit_index'] = None
+                        st.success("Edición cancelada")
                         st.rerun()
                     else:
-                        st.error("Error al crear actividad")
+                        # Activar modo edición
+                        st.session_state[edit_key] = True
+                        st.session_state[f"edit_index"] = index
+
+                # Botón Eliminar
+                if cols[-1].button("🗑️", key=f"delete_{actividad['id_actividad']}"):
+                    st.session_state.show_confirm = True
+                    st.session_state.delete_id = actividad['id_actividad']
+                    st.warning(
+                        f"Eliminar fila {index}: {actividad.to_dict()}")
+
+                if st.session_state.get(f'Editando_Actividad_{actividad["id_actividad"]}', False):
+                    # Si estamos editando, mostrar formulario de edición
+
+                    st.subheader("Editar Actividad")
+                    logger.info(
+                        f"Editando actividad...{st.session_state[f'edit_index']}")
+                    # logger.info(f"Editando actividad: {row.to_dict()}")
+                    # # Formulario para editar actividad
+                    with st.form(f"edit_employee_{actividad['id_actividad']}"):
+
+                        logger.info(
+                            f"Formulario de edición para actividad: {actividad['id_actividad']}")
+                        self.mostrar_formulario_edicion(
+                            "Actividades", actividades_df, f'Editando_Actividad_{actividad["id_actividad"]}', actividad)
+
+                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == actividad['id_actividad']:
+                    with st.form(f"confirm_delete_{actividad['id_actividad']}"):
+                        st.warning(
+                            f"¿Estás seguro de eliminar a {actividad['nombre']}?")
+                        self.mostrar_formulario_eliminar(
+                            "Actividades", actividades_df,  f'Eliminando_Actividad_{actividad["id_actividad"]}', actividad)
+
+        else:
+            st.info("No hay actividads registrados")
+
+        # Formulario para agregar nuevo actividad
+        self.mostrar_formulario_agregar(
+            nombre_tabla="Actividades", df=actividades_df)
 
     def manage_reports(self):
         """Gestión de reportes"""
@@ -363,8 +482,43 @@ class AdminInterface:
 
         reportes_df = self.db_manager.get_data('Reportes')
 
+        # Barra de búsqueda
+        search_term = st.text_input(
+            "Buscar reporte por numero o descripción")
+
+        # Filtrar por término de búsqueda
+        if search_term:
+            mask = reportes_df['Nro'].astype(str).str.contains(search_term, case=False) | \
+                reportes_df['descripcion'].str.contains(
+                search_term, case=False)
+            reportes_df = reportes_df[mask]
+
+        # Paginación
+        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
+        total_pages = max(1, (len(reportes_df) // page_size) +
+                          (1 if len(reportes_df) % page_size > 0 else 0))
+        page = st.number_input('Página', min_value=1,
+                               max_value=total_pages, value=1)
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, len(reportes_df))
+
+        reportes_df = reportes_df.iloc[start_idx:end_idx]
+
         if not reportes_df.empty:
-            st.dataframe(reportes_df, use_container_width=True)
+            # st.dataframe(reportes_df, use_container_width=True)
+            st.title("Tabla de Reportes")
+
+            # Mostrar encabezados
+            # +2 para Editar y Eliminar
+            cols = st.columns(len(reportes_df.columns))
+            for i, col in enumerate(reportes_df.columns):
+                cols[i].markdown(f"**{col}**")
+
+            # Mostrar filas con botones
+            for index, reporte in reportes_df.iterrows():
+                cols = st.columns(len(reporte))
+                for i, value in enumerate(reporte):
+                    cols[i].write(value)
         else:
             st.info("No hay reportes disponibles")
 
