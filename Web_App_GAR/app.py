@@ -27,7 +27,7 @@ st.markdown("""
         border-radius: 10px;
         margin-bottom: 2rem;
     }
-    
+
     .metric-card {
         background: white;
         padding: 1rem;
@@ -35,7 +35,7 @@ st.markdown("""
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         border-left: 4px solid #667eea;
     }
-    
+
     .sidebar .sidebar-content {
         background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
     }
@@ -47,13 +47,16 @@ def main():
     # Inicializar el gestor de base de datos
     if 'db_manager' not in st.session_state:
         st.session_state.db_manager = DatabaseManager()
-        if not st.session_state.db_manager.connect_to_sql_server():
-            if not st.session_state.db_manager.connect_to_sql_lite():
-                st.session_state.db_manager.use_excel = True
-                st.info("Usando archivo Excel como base de datos.")
-            else:
-                st.success("Conectado a SQLite correctamente.")
-                st.session_state.db_manager.sql_lite_connection.close()
+        if st.session_state.db_manager.sql_engine == None:
+            if not st.session_state.db_manager.connect_to_sql_server():
+                if st.session_state.db_manager.sql_lite_connection == None:
+                    if not st.session_state.db_manager.connect_to_sql_lite():
+                        st.session_state.db_manager.use_excel = True
+                        st.info("Usando archivo Excel como base de datos.")
+                    else:
+                        st.success("Conectado a SQLite correctamente.")
+                else:
+                    st.success("Conectado a SQLite correctamente.")
 
     # Inicializar el gestor de autenticación
     if 'auth_manager' not in st.session_state:
@@ -100,9 +103,12 @@ def main():
 
         # Mostrar interfaz según el rol
         if st.session_state.auth_manager.is_admin(user_data):
-            # Interfaz de administrador
-            admin_interface = AdminInterface(st.session_state.db_manager)
-            admin_interface.show_admin_dashboard()
+            if "admin_interface" not in st.session_state:
+                # Interfaz de administrador
+                st.session_state.admin_interface = AdminInterface(
+                    st.session_state.db_manager)
+                logger.info("sesion iniciada como administrador")
+            st.session_state.admin_interface.show_admin_dashboard()
         else:
             # Interfaz de empleado
             employee_interface = EmployeeInterface(

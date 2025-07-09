@@ -21,13 +21,24 @@ except ImportError:
 
 
 class DatabaseManager:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(DatabaseManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, excel_path: str = "") -> None:
+        if self._initialized:
+            return
         self.path = excel_path or "Basedatos.xlsx"
         self.use_excel = False
         self.sql_engine = None
         self.sql_lite_connection = None
         self.cursor = None
         logger.info("DatabaseManager inicializado.")
+        self._initialized = True
 
     def connect_to_sql_lite(self, db_path: str = "db_gpc.db") -> bool:
         """Intenta conectar a SQLite"""

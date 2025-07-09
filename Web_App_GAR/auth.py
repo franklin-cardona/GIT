@@ -9,9 +9,20 @@ logger = setup_logging()
 
 
 class AuthManager:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(AuthManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, db_manager: DatabaseManager):
+        if self._initialized:
+            return
         self.db_manager = db_manager
         logger.info("AuthManager inicializado.")
+        self._initialized = True
 
     def hash_password(self, password: str) -> str:
         """Genera un hash seguro de la contraseña usando bcrypt"""

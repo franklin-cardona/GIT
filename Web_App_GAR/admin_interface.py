@@ -10,9 +10,20 @@ logger = setup_logging()
 
 
 class AdminInterface:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(AdminInterface, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, db_manager: DatabaseManager):
+        if self._initialized:
+            return
         self.db_manager = db_manager
         logger.info("AdminInterface inicializado.")
+        self._initialized = True
 
     @st.cache_data(ttl=300)
     def _get_cached_data(_self, table_name: str, columns: list = None) -> pd.DataFrame:
@@ -170,29 +181,30 @@ class AdminInterface:
         st.subheader(edit_key)
         condiciones = {}
 
-        for col in df.columns:
-            valor_actual = row[col]
+        if st.session_state.get(edit_key, True):
+            for col in df.columns:
+                valor_actual = row[col]
 
-            if col.lower() == "id" or col.startswith("id_"):
-                # Usar como condición para actualizar
-                condiciones[col] = valor_actual
-                continue
+                if col.lower() == "id" or col.startswith("id_"):
+                    # Usar como condición para actualizar
+                    condiciones[col] = valor_actual
+                    continue
 
-            eliminar = st.form_submit_button("Sí, Eliminar")
-            cancelar = st.form_submit_button("Cancelar")
-            if eliminar:
-                if self.db_manager.delete_data(nombre_tabla, condiciones):
-                    st.success("Registro eliminado exitosamente")
-                    st.session_state.show_confirm = False
-                    del st.session_state.delete_id
-                    st.cache_data.clear()
+                eliminar = st.form_submit_button("Sí, Eliminar")
+                cancelar = st.form_submit_button("Cancelar")
+                if eliminar:
+                    if self.db_manager.delete_data(nombre_tabla, condiciones):
+                        st.success("Registro eliminado exitosamente")
+                        st.session_state[edit_key] = False
+                        st.session_state[f"delete_index"] = None
+                        st.cache_data.clear()
+                        st.rerun()
+                    else:
+                        st.error("Error al eliminar empleado")
+                if cancelar:
+                    st.session_state[edit_key] = False
+                    st.session_state[f"delete_index"] = None
                     st.rerun()
-                else:
-                    st.error("Error al eliminar empleado")
-            if cancelar:
-                st.session_state.show_confirm = False
-                del st.session_state.delete_id
-                st.rerun()
 
     def manage_employees(self):
         """Gestión de empleados con búsqueda y paginación"""
@@ -255,7 +267,7 @@ class AdminInterface:
                 # Botón Eliminar
                 if cols[-1].button("🗑️", key=f"delete_{empleado['id_empleado']}"):
                     st.session_state.show_confirm = True
-                    st.session_state.delete_id = empleado['id_empleado']
+                    st.session_state.employee_to_delete = empleado['id_empleado']
                     st.warning(f"Eliminar fila {index}: {empleado.to_dict()}")
 
                 if st.session_state.get(f'Editando_Empleado_{empleado["id_empleado"]}', False):
@@ -267,18 +279,28 @@ class AdminInterface:
                     # logger.info(f"Editando empleado: {row.to_dict()}")
                     # # Formulario para editar empleado
                     with st.form(f"edit_employee_{empleado['id_empleado']}"):
-
-                        logger.info(
-                            f"Formulario de edición para empleado: {empleado['id_empleado']}")
                         self.mostrar_formulario_edicion(
                             "Empleados", empleados_df, f'Editando_Empleado_{empleado["id_empleado"]}', empleado)
 
-                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == empleado['id_empleado']:
-                    with st.form(f"confirm_delete_{empleado['id_empleado']}"):
+                if st.session_state.get('show_confirm', False) and st.session_state.get('employee_to_delete') == empleado['id_empleado']:
+                    with st.form(f"confirm_delete_empleado_{empleado['id_empleado']}"):
+
                         st.warning(
                             f"¿Estás seguro de eliminar a {empleado['nombre']}?")
-                        self.mostrar_formulario_eliminar(
-                            "Empleados", empleados_df,  f'Eliminando_Empleado_{empleado["id_empleado"]}', empleado)
+                        eliminar = st.form_submit_button("Sí, Eliminar")
+                        cancelar = st.form_submit_button("Cancelar")
+                        if eliminar:
+                            if self.db_manager.delete_data('Empleados', {"id_empleado": empleado['id_empleado']}):
+                                st.success("Empleado eliminado exitosamente")
+                                st.session_state.show_confirm = False
+                                del st.session_state['employee_to_delete']
+                                st.rerun()
+                            else:
+                                st.error("Error al eliminar empleado")
+                        if cancelar:
+                            st.session_state.show_confirm = False
+                            del st.session_state['employee_to_delete']
+                            st.rerun()
 
         else:
             st.info("No hay empleados registrados")
@@ -348,7 +370,7 @@ class AdminInterface:
                 # Botón Eliminar
                 if cols[-1].button("🗑️", key=f"delete_{contrato['id_contrato']}"):
                     st.session_state.show_confirm = True
-                    st.session_state.delete_id = contrato['id_contrato']
+                    st.session_state.contract_to_delete = contrato['id_contrato']
                     st.warning(f"Eliminar fila {index}: {contrato.to_dict()}")
 
                 if st.session_state.get(f'Editando_Contrato_{contrato["id_contrato"]}', False):
@@ -366,12 +388,25 @@ class AdminInterface:
                         self.mostrar_formulario_edicion(
                             "Contratos", contratos_df, f'Editando_Contrato_{contrato["id_contrato"]}', contrato)
 
-                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == contrato['id_contrato']:
-                    with st.form(f"confirm_delete_{contrato['id_contrato']}"):
+                if st.session_state.get('show_confirm', False) and st.session_state.get('contract_to_delete') == contrato['id_contrato']:
+                    with st.form(f"confirm_delete_contrato_{contrato['id_contrato']}"):
+
                         st.warning(
-                            f"¿Estás seguro de eliminar a {contrato['nombre']}?")
-                        self.mostrar_formulario_eliminar(
-                            "Contratos", contratos_df,  f'Eliminando_Contrato_{contrato["id_contrato"]}', contrato)
+                            f"¿Estás seguro de eliminar a {contrato['nombre_contrato']}?")
+                        eliminar = st.form_submit_button("Sí, Eliminar")
+                        cancelar = st.form_submit_button("Cancelar")
+                        if eliminar:
+                            if self.db_manager.delete_data('Contratos', {"id_contrato": contrato['id_contrato']}):
+                                st.success("Contrato eliminado exitosamente")
+                                st.session_state.show_confirm = False
+                                del st.session_state['contract_to_delete']
+                                st.rerun()
+                            else:
+                                st.error("Error al eliminar contrato")
+                        if cancelar:
+                            st.session_state.show_confirm = False
+                            del st.session_state['contract_to_delete']
+                            st.rerun()
 
         else:
             st.info("No hay contratos registrados")
@@ -443,9 +478,8 @@ class AdminInterface:
                 # Botón Eliminar
                 if cols[-1].button("🗑️", key=f"delete_{actividad['id_actividad']}"):
                     st.session_state.show_confirm = True
-                    st.session_state.delete_id = actividad['id_actividad']
-                    st.warning(
-                        f"Eliminar fila {index}: {actividad.to_dict()}")
+                    st.session_state.activitie_to_delete = actividad['id_actividad']
+                    st.warning(f"Eliminar fila {index}: {actividad.to_dict()}")
 
                 if st.session_state.get(f'Editando_Actividad_{actividad["id_actividad"]}', False):
                     # Si estamos editando, mostrar formulario de edición
@@ -462,12 +496,25 @@ class AdminInterface:
                         self.mostrar_formulario_edicion(
                             "Actividades", actividades_df, f'Editando_Actividad_{actividad["id_actividad"]}', actividad)
 
-                if st.session_state.get('show_confirm', False) and st.session_state.get('delete_id') == actividad['id_actividad']:
-                    with st.form(f"confirm_delete_{actividad['id_actividad']}"):
+                if st.session_state.get('show_confirm', False) and st.session_state.get('activitie_to_delete') == actividad['id_actividad']:
+                    with st.form(f"confirm_delete_actividad_{actividad['id_actividad']}"):
+
                         st.warning(
-                            f"¿Estás seguro de eliminar a {actividad['nombre']}?")
-                        self.mostrar_formulario_eliminar(
-                            "Actividades", actividades_df,  f'Eliminando_Actividad_{actividad["id_actividad"]}', actividad)
+                            f"¿Estás seguro de eliminar a {actividad['Nro']}?")
+                        eliminar = st.form_submit_button("Sí, Eliminar")
+                        cancelar = st.form_submit_button("Cancelar")
+                        if eliminar:
+                            if self.db_manager.delete_data('Contratos', {"id_actividad": actividad['id_actividad']}):
+                                st.success("actividad eliminada exitosamente")
+                                st.session_state.show_confirm = False
+                                del st.session_state['activitie_to_delete']
+                                st.rerun()
+                            else:
+                                st.error("Error al eliminar actividad")
+                        if cancelar:
+                            st.session_state.show_confirm = False
+                            del st.session_state['activitie_to_delete']
+                            st.rerun()
 
         else:
             st.info("No hay actividads registrados")
