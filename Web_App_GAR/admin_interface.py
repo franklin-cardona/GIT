@@ -97,7 +97,7 @@ class AdminInterface:
         toggle_key = f"mostrar_formulario_{nombre_tabla}"
 
         texto_ejemplo = {'nombre': 'James David Rodríguez Rubio',
-                         'correo': 'james.rodriguez@adres.gov.co',
+                         'correo': 'james.rodriguez@example.com',
                          'password': '123456',
                          'nombre_contrato': '001-2025',
                          'fecha_inicio': str(datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")),
@@ -273,7 +273,7 @@ class AdminInterface:
                 cols = st.columns(len(empleado) + 2)
                 for i, (col_name, value) in enumerate(empleado.items()):
                     if 'password' in col_name.lower():
-                        cols[i].write(f"******")
+                        cols[i].write(f'**')
                     else:
                         cols[i].write(value)
 
