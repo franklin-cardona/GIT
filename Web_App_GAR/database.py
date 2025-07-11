@@ -65,7 +65,7 @@ class DatabaseManager:
 
     def connect_to_sql_server(
         self,
-        server: str = "LAPTOP-V6LUQTIO\\SQLEXPRESS",
+        server: str = "P18PPAD20\\SQLEXPRESS",
         database: str = "db_gpc",
         port: Optional[int] = 1433,
         username: str = None,
@@ -152,7 +152,7 @@ class DatabaseManager:
             logger.warning("No hay conexión a SQL Server.")
             return pd.DataFrame()
         try:
-            query = f"SELECT TOP 1 * FROM {table_name}"
+            query = f"SELECT * FROM {table_name}"
 
             if filters:
                 conditions = " AND ".join(

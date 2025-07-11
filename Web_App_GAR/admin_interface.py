@@ -4,6 +4,9 @@ import pandas as pd
 from datetime import datetime
 from database import DatabaseManager
 from logger import setup_logging
+import time
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 logger = setup_logging()
@@ -85,13 +88,24 @@ class AdminInterface:
 
         # ... (resto del dashboard) ...
 
-    def mostrar_formulario_agregar(self, nombre_tabla: str, df: pd.DataFrame):
+    def mostrar_formulario_agregar(self, nombre_tabla: str, df: pd.DataFrame, column_id: str):
         # """Muestra un formulario dinámico para agregar registros a una tabla.
         #     Parámetros:- nombre_tabla: str -> nombre de la tabla en la base de datos.
         # - df: pd.DataFrame -> DataFrame con la estructura de la tabla.
         # - db_manager: objeto con método insert_data(nombre_tabla, dict_datos)
         # """
         toggle_key = f"mostrar_formulario_{nombre_tabla}"
+
+        texto_ejemplo = {'nombre': 'James David Rodríguez Rubio',
+                         'correo': 'james.rodriguez@adres.gov.co',
+                         'password': '123456',
+                         'nombre_contrato': '001-2025',
+                         'fecha_inicio': str(datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")),
+                         'fecha_fin': str((datetime.fromtimestamp(time.time()) + relativedelta(months=8)).strftime("%Y-%m-%d")),
+                         'descripcion': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
+                         'Obligación contractual': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
+                         'Actividad desarrollada': 'No aplica para el periodo evaluado',
+                         }
 
         if st.button(f"➕ Agregar nuevo registro a {nombre_tabla}", key=f"btn_toggle_{nombre_tabla}"):
             st.session_state[toggle_key] = not st.session_state.get(
@@ -102,12 +116,21 @@ class AdminInterface:
             with st.form(f"form_agregar_{nombre_tabla}"):
                 nuevo_registro = {}
 
+                logger.info(df.columns)
+
                 for col in df.columns:
-                    if col.lower() == "id" or col.startswith("id_"):
+                    if col.lower() == column_id:
                         continue  # Omitir campos ID si se generan automáticamente
 
-                    ejemplo_valor = df[col].dropna(
-                    ).iloc[0] if not df[col].dropna().empty else ""
+                    col_lower = col.lower()
+
+                    if col_lower in texto_ejemplo:
+                        ejemplo_valor = f"{texto_ejemplo[col_lower]}"
+                    elif not df[col].dropna().empty:
+                        ejemplo_valor = df[col].dropna().iloc[0]
+                    else:
+                        ejemplo_valor = None  # o algún valor por defecto
+                    logger.info(f"{col}:{ejemplo_valor}")
 
                     if isinstance(ejemplo_valor, bool):
                         nuevo_registro[col] = st.checkbox(col, value=True)
@@ -115,12 +138,13 @@ class AdminInterface:
                         nuevo_registro[col] = st.selectbox(col, ["Sí", "No"])
                     else:
                         nuevo_registro[col] = st.text_input(
-                            col, value=str(ejemplo_valor))
+                            col, value="", placeholder=str(ejemplo_valor))
 
                 if st.form_submit_button("Agregar"):
                     if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
                         st.success("Registro agregado exitosamente")
                         st.session_state[toggle_key] = False
+                        st.cache_data.clear()
                         st.rerun()
                     else:
                         st.error("Error al agregar registro")
@@ -247,8 +271,11 @@ class AdminInterface:
             # Mostrar filas con botones
             for index, empleado in empleados_df.iterrows():
                 cols = st.columns(len(empleado) + 2)
-                for i, value in enumerate(empleado):
-                    cols[i].write(value)
+                for i, (col_name, value) in enumerate(empleado.items()):
+                    if 'password' in col_name.lower():
+                        cols[i].write(f"******")
+                    else:
+                        cols[i].write(value)
 
                 # Botón Editar
                 if cols[-2].button("✏️", key=f"edit_{empleado['id_empleado']}"):
@@ -307,7 +334,7 @@ class AdminInterface:
 
         # Formulario para agregar nuevo empleado
         self.mostrar_formulario_agregar(
-            nombre_tabla="Empleados", df=empleados_df)
+            nombre_tabla="Empleados", df=empleados_df, column_id="id_empleado")
 
     def manage_contracts(self):
         """Gestión de contratos con búsqueda y paginación"""
@@ -413,7 +440,7 @@ class AdminInterface:
 
         # Formulario para agregar nuevo contrato
         self.mostrar_formulario_agregar(
-            nombre_tabla="Contratos", df=contratos_df)
+            nombre_tabla="Contratos", df=contratos_df, column_id="id_contrato")
 
     def manage_activities(self):
         """Gestión de actividads con búsqueda y paginación"""
@@ -521,7 +548,7 @@ class AdminInterface:
 
         # Formulario para agregar nuevo actividad
         self.mostrar_formulario_agregar(
-            nombre_tabla="Actividades", df=actividades_df)
+            nombre_tabla="Actividades", df=actividades_df, column_id="id_actividad")
 
     def manage_reports(self):
         """Gestión de reportes"""
