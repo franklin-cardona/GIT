@@ -159,8 +159,7 @@ class DatabaseManager:
                     [f"{k} = '{v}'" for k, v in filters.items()])
                 query += f" WHERE {conditions}"
 
-            # if limit:
-            #     query += f" LIMIT {limit}"
+            logger.info(f"Consulta SQL: {query} con filtros {filters}")
 
             return pd.read_sql(query, self.sql_engine)
         except Exception as e:
