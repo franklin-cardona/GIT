@@ -199,37 +199,6 @@ class AdminInterface:
             st.info("Edición cancelada")
             st.rerun()
 
-    def mostrar_formulario_eliminar(self, nombre_tabla: str, df: pd.DataFrame, edit_key: str, row):
-        edit_key = edit_key
-        logger.info(f"eliminar a : {edit_key} => {row.to_dict()}")
-        st.subheader(edit_key)
-        condiciones = {}
-
-        if st.session_state.get(edit_key, True):
-            for col in df.columns:
-                valor_actual = row[col]
-
-                if col.lower() == "id" or col.startswith("id_"):
-                    # Usar como condición para actualizar
-                    condiciones[col] = valor_actual
-                    continue
-
-                eliminar = st.form_submit_button("Sí, Eliminar")
-                cancelar = st.form_submit_button("Cancelar")
-                if eliminar:
-                    if self.db_manager.delete_data(nombre_tabla, condiciones):
-                        st.success("Registro eliminado exitosamente")
-                        st.session_state[edit_key] = False
-                        st.session_state[f"delete_index"] = None
-                        st.cache_data.clear()
-                        st.rerun()
-                    else:
-                        st.error("Error al eliminar empleado")
-                if cancelar:
-                    st.session_state[edit_key] = False
-                    st.session_state[f"delete_index"] = None
-                    st.rerun()
-
     def manage_employees(self):
         """Gestión de empleados con búsqueda y paginación"""
         st.header("👥 Gestión de Empleados")
