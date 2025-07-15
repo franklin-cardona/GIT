@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_modal import Modal
 import pandas as pd
+import numpy as np
 from datetime import datetime
 from database import DatabaseManager
 from logger import setup_logging
@@ -21,10 +22,12 @@ class AdminInterface:
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, db_manager: DatabaseManager):
+    def __init__(self, db_manager: DatabaseManager, user_data: dict = None):
         if self._initialized:
             return
         self.db_manager = db_manager
+        self.user_data = user_data
+        self.employee_id = user_data['id_empleado']
         logger.info("AdminInterface inicializado.")
         self._initialized = True
 
@@ -96,15 +99,24 @@ class AdminInterface:
         # """
         toggle_key = f"mostrar_formulario_{nombre_tabla}"
 
+        if nombre_tabla != "Empleados":
+            df_2 = self._get_cached_data("Empleados")
+        else:
+            df_2 = pd.DataFrame(
+                columns=['id_empleado', 'nombre', 'correo', 'rol', 'activo'])
+
         texto_ejemplo = {'nombre': 'James David Rodríguez Rubio',
                          'correo': 'james.rodriguez@example.com',
                          'password': '123456',
-                         'nombre_contrato': '001-2025',
+                         'nombre_contrato': 'CPS-001-2025',
                          'fecha_inicio': str(datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")),
                          'fecha_fin': str((datetime.fromtimestamp(time.time()) + relativedelta(months=8)).strftime("%Y-%m-%d")),
                          'descripcion': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
-                         'Obligación contractual': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
-                         'Actividad desarrollada': 'No aplica para el periodo evaluado',
+                         'obligación contractual': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
+                         'actividad desarrollada': 'No aplica para el periodo evaluado',
+                         'rol': ['Administrador', 'Empleado'],
+                         'id_validador': f"{self.employee_id}",
+                         'id_empleado': df_2.iloc[:, :2].set_index(df_2.columns[0]).to_dict()[df_2.columns[1]]
                          }
 
         if st.button(f"➕ Agregar nuevo registro a {nombre_tabla}", key=f"btn_toggle_{nombre_tabla}"):
@@ -125,14 +137,21 @@ class AdminInterface:
                     col_lower = col.lower()
 
                     if col_lower in texto_ejemplo:
-                        ejemplo_valor = f"{texto_ejemplo[col_lower]}"
+                        ejemplo_valor = texto_ejemplo[col_lower]
+                        logger.info(
+                            f"Ejemplo para {col_lower}: {ejemplo_valor} instancia: {type(ejemplo_valor)}")
                     elif not df[col].dropna().empty:
                         ejemplo_valor = df[col].dropna().iloc[0]
                     else:
                         ejemplo_valor = None  # o algún valor por defecto
-                    logger.info(f"{col}:{ejemplo_valor}")
 
-                    if isinstance(ejemplo_valor, bool):
+                    if isinstance(ejemplo_valor, (list, tuple, np.ndarray)):
+                        nuevo_registro[col] = st.selectbox(
+                            col, ejemplo_valor, index=1 if len(ejemplo_valor) > 1 else 0)
+                    elif isinstance(ejemplo_valor, (dict)):
+                        nuevo_registro[col] = st.selectbox(
+                            col, [f"{k}: {v}" for k, v in ejemplo_valor.items()]).split(":")[0].strip()
+                    elif isinstance(ejemplo_valor, (bool, np.bool)):
                         nuevo_registro[col] = st.checkbox(col, value=True)
                     elif isinstance(ejemplo_valor, str) and ejemplo_valor.lower() in ["sí", "no"]:
                         nuevo_registro[col] = st.selectbox(col, ["Sí", "No"])
@@ -141,13 +160,15 @@ class AdminInterface:
                             col, value="", placeholder=str(ejemplo_valor))
 
                 if st.form_submit_button("Agregar"):
-                    if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
-                        st.success("Registro agregado exitosamente")
-                        st.session_state[toggle_key] = False
-                        st.cache_data.clear()
-                        st.rerun()
-                    else:
-                        st.error("Error al agregar registro")
+                    logger.info(
+                        f"Nuevo registro para {nombre_tabla}: {nuevo_registro}")
+                    # if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
+                    #     st.success("Registro agregado exitosamente")
+                    #     st.session_state[toggle_key] = False
+                    #     st.cache_data.clear()
+                    #     st.rerun()
+                    # else:
+                    #     st.error("Error al agregar registro")
                 cancelar = st.form_submit_button("Cancelar")
                 if cancelar:
                     st.session_state[toggle_key] = None

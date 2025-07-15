@@ -106,7 +106,7 @@ def main():
             if "admin_interface" not in st.session_state:
                 # Interfaz de administrador
                 st.session_state.admin_interface = AdminInterface(
-                    st.session_state.db_manager)
+                    st.session_state.db_manager, user_data)
                 logger.info("sesion iniciada como administrador")
             st.session_state.admin_interface.show_admin_dashboard()
         else:

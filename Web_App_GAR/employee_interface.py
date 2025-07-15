@@ -1,10 +1,13 @@
+from dateutil.relativedelta import relativedelta
+from logger import setup_logging
+import time
+from database import DatabaseManager
+from datetime import datetime
 import streamlit as st
 import pandas as pd
-from datetime import datetime
-from database import DatabaseManager
-import time
-from logger import setup_logging
-from dateutil.relativedelta import relativedelta
+import locale
+# Setea la variable LC_ALL al conjunto de código UTF-8 con descripción español Colombia
+locale.setlocale(locale.LC_ALL, 'es_CO.UTF-8')
 
 
 logger = setup_logging()
@@ -25,7 +28,8 @@ class EmployeeInterface:
 
     def show_employee_dashboard(self):
         """Muestra el dashboard del empleado"""
-        st.title(f"👤 Panel de {self.user_data['nombre']}")
+        st.title(
+            f"👤 Panel de {self.user_data['nombre']} para el mes de {datetime.now().strftime('%B')}")
 
         # Sidebar para navegación
         with st.sidebar:
@@ -101,8 +105,8 @@ class EmployeeInterface:
                     if not actividades_contrato.empty:
                         for _, actividad in actividades_contrato.iterrows():
                             # Verificar si hay reporte para esta actividad
-                            reporte_actividad = mis_reportes[mis_reportes['id_actividad']
-                                                             == actividad['id_actividad']]
+                            reporte_actividad = mis_reportes[(mis_reportes['id_actividad']
+                                                             == actividad['id_actividad']) & (reportes_df['fecha'].dt.month == datetime.now().month)]
 
                             col1, col2, col3 = st.columns([3, 1, 1])
                             with col1:
@@ -495,12 +499,11 @@ class EmployeeInterface:
                 if not actividad.empty:
                     actividad_info = actividad.iloc[0]
                     reportes_detallados.append({
-                        'Fecha': reporte['fecha_reporte'],
+                        'Fecha': reporte['fecha'].strftime("%Y-%m-%d %H:%M:%S"),
                         'Actividad': actividad_info['descripcion'],
                         'Acciones': reporte['acciones_realizadas'][:100] + "..." if len(str(reporte['acciones_realizadas'])) > 100 else reporte['acciones_realizadas'],
                         'Porcentaje': f"{reporte['porcentaje']}%",
-                        'Calidad': "⭐" * reporte['calidad'] if pd.notna(reporte['calidad']) else "N/A",
-                        'Estado': "✅ Completado" if reporte['estado'] else "⏳ En progreso"
+                        'Estado': "✅ Aprobado" if reporte['estado'] else "⏳ En Revisión",
                     })
 
             if reportes_detallados:
