@@ -48,7 +48,7 @@ def main():
     if 'db_manager' not in st.session_state:
         st.session_state.db_manager = DatabaseManager()
         if st.session_state.db_manager.sql_engine == None:
-            if not st.session_state.db_manager.connect_to_sql_server():
+            if not st.session_state.db_manager.connect_to_sql_server():#    (server="localhost", username="sa", password="Password123456"): 
                 if st.session_state.db_manager.sql_lite_connection == None:
                     if not st.session_state.db_manager.connect_to_sql_lite():
                         st.session_state.db_manager.use_excel = True

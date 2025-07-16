@@ -338,6 +338,7 @@ class EmployeeInterface:
                                 st.success("actividad eliminada exitosamente")
                                 st.session_state.show_confirm = False
                                 del st.session_state['activitie_to_delete']
+                                st.cache_data.clear()
                                 st.rerun()
                             else:
                                 st.error("Error al eliminar actividad")
@@ -428,13 +429,14 @@ class EmployeeInterface:
                                         'porcentaje': porcentaje,
                                         'entregable': entregable,
                                         'estado': estado,
-                                        'fecha_reporte': datetime.now()
+                                        'fecha': datetime.now()
                                     }
 
                                     condicion = f"id_reporte = {reporte_existente.iloc[0]['id_reporte']}"
                                     if self.db_manager.update_data('Reportes', datos_actualizacion, condicion):
                                         st.success(
                                             "Reporte actualizado exitosamente")
+                                        st.cache_data.clear()
                                         st.rerun()
                                     else:
                                         st.error(
@@ -444,13 +446,11 @@ class EmployeeInterface:
                                 max_id = reportes_df['id_reporte'].max(
                                 ) if not reportes_df.empty else 0
                                 nuevo_reporte = {
-                                    'id_reporte': max_id + 1,
                                     'id_empleado': self.employee_id,
                                     'id_actividad': id_actividad,
-                                    'fecha_reporte': datetime.now(),
+                                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                     'acciones_realizadas': acciones_realizadas,
                                     'comentarios': comentarios,
-                                    'calidad': calidad,
                                     'porcentaje': porcentaje,
                                     'entregable': entregable,
                                     'estado': estado
@@ -458,6 +458,7 @@ class EmployeeInterface:
 
                                 if self.db_manager.insert_data('Reportes', nuevo_reporte):
                                     st.success("Acción guardada exitosamente")
+                                    st.cache_data.clear()
                                     st.rerun()
                                 else:
                                     st.error("Error al guardar la acción")
@@ -543,6 +544,7 @@ class EmployeeInterface:
                             # Marcar como leída
                             condicion = f"id_notificacion = {notif['id_notificacion']}"
                             if self.db_manager.update_data('Notificaciones', {'leido': True}, condicion):
+                                st.cache_data.clear()
                                 st.rerun()
         else:
             st.info("No tienes notificaciones")
