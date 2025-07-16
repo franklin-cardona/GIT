@@ -55,6 +55,8 @@ class EmployeeInterface:
         """Muestra el dashboard principal del empleado"""
         st.header("📊 Mi Resumen")
 
+        mes_actual = 6  # datetime.now().month
+
         # Obtener datos del empleado con caché
         reportes_df = self._get_cached_data(
             'Reportes', {'id_empleado': self.employee_id})
@@ -66,18 +68,19 @@ class EmployeeInterface:
                                    == self.employee_id]
 
         # Obtener contratos del empleado
-        mis_contratos = contratos_df
+        mis_contratos = contratos_df.copy()
 
         # Métricas del empleado
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            total_actividades = len(mis_reportes)
+            total_actividades = len(
+                actividades_df[actividades_df['id_contrato'].isin(mis_contratos['id_contrato'])])
             st.metric("Total de Actividades", total_actividades)
 
         with col2:
             reportadas_con_acciones = len(
-                mis_reportes[mis_reportes['acciones_realizadas'].notna()])
+                mis_reportes[(mis_reportes['acciones_realizadas'].notna()) & (mis_reportes['fecha'].dt.month == mes_actual)])
             st.metric("Reportadas con Acciones", reportadas_con_acciones)
 
         with col3:
@@ -106,7 +109,7 @@ class EmployeeInterface:
                         for _, actividad in actividades_contrato.iterrows():
                             # Verificar si hay reporte para esta actividad
                             reporte_actividad = mis_reportes[(mis_reportes['id_actividad']
-                                                             == actividad['id_actividad']) & (reportes_df['fecha'].dt.month == datetime.now().month)]
+                                                             == actividad['id_actividad']) & (mis_reportes['fecha'].dt.month == datetime.now().month)]
 
                             col1, col2, col3 = st.columns([3, 1, 1])
                             with col1:
@@ -422,7 +425,6 @@ class EmployeeInterface:
                                     datos_actualizacion = {
                                         'acciones_realizadas': acciones_realizadas,
                                         'comentarios': comentarios,
-                                        'calidad': calidad,
                                         'porcentaje': porcentaje,
                                         'entregable': entregable,
                                         'estado': estado,
