@@ -494,8 +494,8 @@ class AdminInterface:
         st.header("📊 Gestión de Reportes")
 
         reportes_df = self.db_manager.get_data('Reportes')
-
-        # Barra de búsqueda
+        reportes_df = reportes_df[['id_reporte', 'id_empleado', 'id_actividad', 'acciones_realizadas',
+                                   'comentarios', 'porcentaje', 'entregable', 'estado']]  # Barra de búsqueda
         search_term = st.text_input(
             "Buscar reporte por numero o descripción")
 
@@ -523,15 +523,48 @@ class AdminInterface:
 
             # Mostrar encabezados
             # +2 para Editar y Eliminar
-            cols = st.columns(len(reportes_df.columns))
+            cols = st.columns(len(reportes_df.columns)+3)
             for i, col in enumerate(reportes_df.columns):
                 cols[i].markdown(f"**{col}**")
 
+            cols[-3].markdown("**Comentar**")
+            cols[-2].markdown("**Aprobar**")
+            cols[-1].markdown("**Guardar**")
+
             # Mostrar filas con botones
             for index, reporte in reportes_df.iterrows():
-                cols = st.columns(len(reporte))
+                comentario = ""
+                aprobacion = None
+                cols = st.columns(len(reporte) + 3)
                 for i, value in enumerate(reporte):
                     cols[i].write(value)
+                # areapara Comentar
+                comentario = cols[-3].text_area(
+                    "💬", key=f"comment_{reporte['id_reporte']}", placeholder="Escriba un comentario aquí")
+                # Botón Aprobar
+                aprobacion = cols[-2].checkbox("",
+                                               key=f"approve_{reporte['id_reporte']}")
+                # Botón Guardar
+                if cols[-1].button("💾", key=f"save_{reporte['id_reporte']}"):
+                    st.session_state.selected_report = reporte
+                    st.session_state.selected_action = "save"
+
+            # Modal para comentarios y aprobación
+            if 'selected_report' in st.session_state and 'selected_action' in st.session_state:
+                if st.session_state.selected_action == "save":
+                    st.success("Reporte listo para guardar")
+                    if len(comentario) > 0 or aprobacion:
+                        registro = {
+                            "id_reporte": st.session_state.selected_report['id_reporte'],
+                            "comentario": comentario,
+                            "aprobacion": aprobacion
+                        }
+                        if self.db_manager.update_data('Reportes', registro, {"id_reporte": st.session_state.selected_report['id_reporte']}):
+                            st.success("Reporte actualizado exitosamente")
+                    st.session_state.selected_report = None
+                    st.session_state.selected_action = None
+                    st.cache_data.clear()
+                    st.rerun()
         else:
             st.info("No hay reportes disponibles")
 
