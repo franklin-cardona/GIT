@@ -1,3 +1,4 @@
+from sqlalchemy import Null
 import streamlit as st
 from streamlit_modal import Modal
 import pandas as pd
@@ -495,78 +496,132 @@ class AdminInterface:
 
         reportes_df = self.db_manager.get_data('Reportes')
         reportes_df = reportes_df[['id_reporte', 'id_empleado', 'id_actividad', 'acciones_realizadas',
-                                   'comentarios', 'porcentaje', 'entregable', 'estado']]  # Barra de búsqueda
-        search_term = st.text_input(
-            "Buscar reporte por numero o descripción")
+                                   'comentarios', 'porcentaje', 'entregable', 'estado']]
 
-        # Filtrar por término de búsqueda
-        if search_term:
-            mask = reportes_df['Nro'].astype(str).str.contains(search_term, case=False) | \
-                reportes_df['descripcion'].str.contains(
-                search_term, case=False)
-            reportes_df = reportes_df[mask]
+        with st.container():
+            st.subheader("🔍 Buscar reportes")
+            search_term = st.text_input(
+                "Buscar por número de reporte o comentario")
 
-        # Paginación
-        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
-        total_pages = max(1, (len(reportes_df) // page_size) +
-                          (1 if len(reportes_df) % page_size > 0 else 0))
-        page = st.number_input('Página', min_value=1,
-                               max_value=total_pages, value=1)
-        start_idx = (page - 1) * page_size
-        end_idx = min(start_idx + page_size, len(reportes_df))
+            if search_term:
+                mask = reportes_df['id_reporte'].astype(str).str.contains(search_term, case=False) | \
+                    reportes_df['comentarios'].str.contains(
+                        search_term, case=False)
+                reportes_df = reportes_df[mask]
 
-        reportes_df = reportes_df.iloc[start_idx:end_idx]
+        st.divider()
+
+        with st.container():
+            st.subheader("📄 Configuración de tabla")
+            page_size = st.selectbox(
+                "Registros por página", [5, 10, 20], index=1)
+            total_pages = max(1, (len(reportes_df) // page_size) +
+                              (1 if len(reportes_df) % page_size > 0 else 0))
+            page = st.number_input('Página', min_value=1,
+                                   max_value=total_pages, value=1)
+            start_idx = (page - 1) * page_size
+            end_idx = min(start_idx + page_size, len(reportes_df))
+            reportes_df = reportes_df.iloc[start_idx:end_idx]
 
         if not reportes_df.empty:
-            # st.dataframe(reportes_df, use_container_width=True)
-            st.title("Tabla de Reportes")
+            st.divider()
+            st.subheader("📋 Tabla de Reportes")
 
-            # Mostrar encabezados
-            # +2 para Editar y Eliminar
-            cols = st.columns(len(reportes_df.columns)+3)
+            modal = Modal(key="confirm_modal",
+                          title="Confirmación de Guardado")
+
+            for reporte in reportes_df.itertuples():
+                key = f"approve_{reporte.id_reporte}"
+                if key not in st.session_state:
+                    st.session_state[key] = False
+
+            # Botones de acción grupal
+            st.markdown("### ✅ Acciones grupales")
+            col_all1, col_all2 = st.columns(2)
+            with col_all1:
+                if st.button("✅ Marcar todos"):
+                    for reporte in reportes_df.itertuples():
+                        st.session_state[f"approve_{reporte.id_reporte}"] = True
+            with col_all2:
+                if st.button("❌ Desmarcar todos"):
+                    for reporte in reportes_df.itertuples():
+                        st.session_state[f"approve_{reporte.id_reporte}"] = False
+
+            st.divider()
+
+            # Encabezados
+            cols = st.columns(len(reportes_df.columns) + 3)
             for i, col in enumerate(reportes_df.columns):
                 cols[i].markdown(f"**{col}**")
-
-            cols[-3].markdown("**Comentar**")
+            cols[-3].markdown("**Comentarios**")
             cols[-2].markdown("**Aprobar**")
             cols[-1].markdown("**Guardar**")
 
-            # Mostrar filas con botones
+            # Filas de reportes
             for index, reporte in reportes_df.iterrows():
-                comentario = ""
-                aprobacion = None
                 cols = st.columns(len(reporte) + 3)
                 for i, value in enumerate(reporte):
                     cols[i].write(value)
-                # areapara Comentar
-                comentario = cols[-3].text_area(
-                    "💬", key=f"comment_{reporte['id_reporte']}", placeholder="Escriba un comentario aquí")
-                # Botón Aprobar
-                aprobacion = cols[-2].checkbox("",
-                                               key=f"approve_{reporte['id_reporte']}")
-                # Botón Guardar
-                if cols[-1].button("💾", key=f"save_{reporte['id_reporte']}"):
-                    st.session_state.selected_report = reporte
-                    st.session_state.selected_action = "save"
 
-            # Modal para comentarios y aprobación
-            if 'selected_report' in st.session_state and 'selected_action' in st.session_state:
-                if st.session_state.selected_action == "save":
-                    st.success("Reporte listo para guardar")
-                    if len(comentario) > 0 or aprobacion:
+                comentario = cols[-3].text_area(
+                    "💬", key=f"comment_{reporte['id_reporte']}", placeholder="Escriba un comentario")
+
+                key = f"approve_{reporte['id_reporte']}"
+                aprobacion = cols[-2].checkbox("Aprobar", key=key)
+
+                key_save = f"save_{reporte['id_reporte']}"
+                if cols[-1].button("💾", key=key_save, disabled=all(st.session_state[f"approve_{r.id_reporte}"] for r in reportes_df.itertuples())):
+                    st.session_state.selected_report = reporte['id_reporte']
+                    st.session_state.selected_action = "save"
+                    modal.open()
+
+                if modal.is_open() and st.session_state.selected_report == reporte['id_reporte'] and st.session_state.selected_action == "save":
+                    registro = {
+                        "comentarios": comentario,
+                        "estado": aprobacion
+                    }
+                    with modal.container():
+                        st.write(
+                            f"¿Desea guardar el reporte **{reporte['id_reporte']}** con los siguientes datos?")
+                        st.write(f"📝 Comentarios: {comentario}")
+                        st.write(
+                            f"✅ Aprobación: {'Sí' if aprobacion else 'No'}")
+                        if st.button("✅ Confirmar"):
+                            if self.db_manager.update_data('Reportes', registro, {"id_reporte": reporte['id_reporte']}):
+                                st.success("Reporte actualizado exitosamente")
+                            st.session_state.selected_report = None
+                            st.session_state.selected_action = None
+                            modal.close()
+                            st.rerun()
+                        if st.button("❌ Cancelar"):
+                            st.session_state.selected_report = None
+                            st.session_state.selected_action = None
+                            st.info("Guardado cancelado")
+                            modal.close()
+                            st.rerun()
+
+            st.divider()
+
+            # Botón para guardar todos
+            st.subheader("💾 Guardado masivo")
+            if all(st.session_state[f"approve_{r.id_reporte}"] for r in reportes_df.itertuples()):
+                if st.button("💾 Guardar todos los reportes"):
+                    for reporte in reportes_df.itertuples():
+                        comentario = st.session_state.get(
+                            f"comment_{reporte.id_reporte}", "")
                         registro = {
-                            "id_reporte": st.session_state.selected_report['id_reporte'],
-                            "comentario": comentario,
-                            "aprobacion": aprobacion
+                            "comentarios": comentario,
+                            "estado": True
                         }
-                        if self.db_manager.update_data('Reportes', registro, {"id_reporte": st.session_state.selected_report['id_reporte']}):
-                            st.success("Reporte actualizado exitosamente")
-                    st.session_state.selected_report = None
-                    st.session_state.selected_action = None
-                    st.cache_data.clear()
+                        self.db_manager.update_data('Reportes', registro, {
+                                                    "id_reporte": reporte.id_reporte})
+                    st.success("✅ Todos los reportes han sido guardados.")
                     st.rerun()
+            else:
+                st.button("💾 Guardar todos los reportes", disabled=True)
+
         else:
-            st.info("No hay reportes disponibles")
+            st.info("🔎 No hay reportes disponibles para mostrar.")
 
     def send_notifications(self):
         """Envío de notificaciones"""
