@@ -177,13 +177,13 @@ class AdminInterface:
                 if st.form_submit_button("Agregar"):
                     logger.info(
                         f"Nuevo registro para {nombre_tabla}: {nuevo_registro}")
-                    # if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
-                    #     st.success("Registro agregado exitosamente")
-                    #     st.session_state[toggle_key] = False
-                    #     st.cache_data.clear()
-                    #     st.rerun()
-                    # else:
-                    #     st.error("Error al agregar registro")
+                    if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
+                        st.success("Registro agregado exitosamente")
+                        st.session_state[toggle_key] = False
+                        st.cache_data.clear()
+                        st.rerun()
+                    else:
+                        st.error("Error al agregar registro")
                 cancelar = st.form_submit_button("Cancelar")
                 if cancelar:
                     st.session_state[toggle_key] = None
