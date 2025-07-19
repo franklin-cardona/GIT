@@ -48,7 +48,8 @@ def main():
     if 'db_manager' not in st.session_state:
         st.session_state.db_manager = DatabaseManager()
         if st.session_state.db_manager.sql_engine == None:
-            if not st.session_state.db_manager.connect_to_sql_server():#    (server="localhost", username="sa", password="Password123456"): 
+            # (server="localhost", username="sa", password="Password123456"):
+            if not st.session_state.db_manager.connect_to_sql_server():
                 if st.session_state.db_manager.sql_lite_connection == None:
                     if not st.session_state.db_manager.connect_to_sql_lite():
                         st.session_state.db_manager.use_excel = True
@@ -66,7 +67,7 @@ def main():
     # Header principal
     st.markdown("""
     <div class="main-header">
-        <h1>🏢 Sistema de Gestión de Empleados</h1>
+        <h1>🏢 Sistema de Gestión de Colaboradores</h1>
         <p>Plataforma integral para la gestión de actividades y reportes</p>
     </div>
     """, unsafe_allow_html=True)

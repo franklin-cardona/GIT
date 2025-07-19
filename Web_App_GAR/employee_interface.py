@@ -53,78 +53,90 @@ class EmployeeInterface:
 
     def show_dashboard(self):
         """Muestra el dashboard principal del empleado"""
-        st.header("📊 Mi Resumen")
 
-        mes_actual = 6  # datetime.now().month
+        if 'page' not in st.session_state:
+            st.session_state['page'] = 'dashboard'
 
-        # Obtener datos del empleado con caché
-        reportes_df = self._get_cached_data(
-            'Reportes', {'id_empleado': self.employee_id})
-        contratos_df = self._get_cached_data(
-            'Contratos', {'id_empleado': self.employee_id})
-        actividades_df = self._get_cached_data('Actividades')
-       # Filtrar reportes del empleado actual
-        mis_reportes = reportes_df[reportes_df['id_empleado']
-                                   == self.employee_id]
+        if st.session_state['page'] == 'dashboard':
 
-        # Obtener contratos del empleado
-        mis_contratos = contratos_df.copy()
+            st.header("📊 Mi Resumen")
 
-        # Métricas del empleado
-        col1, col2, col3 = st.columns(3)
+            mes_actual = 6  # datetime.now().month
 
-        with col1:
-            total_actividades = len(
-                actividades_df[actividades_df['id_contrato'].isin(mis_contratos['id_contrato'])])
-            st.metric("Total de Actividades", total_actividades)
+            # Obtener datos del empleado con caché
+            reportes_df = self._get_cached_data(
+                'Reportes', {'id_empleado': self.employee_id})
+            contratos_df = self._get_cached_data(
+                'Contratos', {'id_empleado': self.employee_id})
+            actividades_df = self._get_cached_data('Actividades')
+        # Filtrar reportes del empleado actual
+            mis_reportes = reportes_df[reportes_df['id_empleado']
+                                       == self.employee_id]
 
-        with col2:
-            reportadas_con_acciones = len(
-                mis_reportes[(mis_reportes['acciones_realizadas'].notna()) & (mis_reportes['fecha'].dt.month == mes_actual)])
-            st.metric("Reportadas con Acciones", reportadas_con_acciones)
+            # Obtener contratos del empleado
+            mis_contratos = contratos_df.copy()
 
-        with col3:
-            porcentaje = (reportadas_con_acciones /
-                          total_actividades * 100) if total_actividades > 0 else 0
-            st.metric("Porcentaje Completado", f"{porcentaje:.1f}%")
+            # Métricas del empleado
+            col1, col2, col3 = st.columns(3)
 
-        # ... (resto del dashboard) ...
+            with col1:
+                total_actividades = len(
+                    actividades_df[actividades_df['id_contrato'].isin(mis_contratos['id_contrato'])])
+                st.metric("Total de Actividades", total_actividades)
 
-        # Botón para agregar acción
-        if st.button("➕ Agregar Nueva Acción", type="primary"):
-            st.session_state['page'] = 'Agregar Acción'
-            st.rerun()
+            with col2:
+                reportadas_con_acciones = len(
+                    mis_reportes[(mis_reportes['acciones_realizadas'].notna()) & (mis_reportes['fecha'].dt.month == mes_actual)])
+                st.metric("Reportadas con Acciones", reportadas_con_acciones)
 
-        # Resumen de actividades por contrato
-        st.subheader("📋 Mis Contratos y Actividades")
+            with col3:
+                porcentaje = (reportadas_con_acciones /
+                              total_actividades * 100) if total_actividades > 0 else 0
+                st.metric("Porcentaje Completado", f"{porcentaje:.1f}%")
 
-        if not mis_contratos.empty:
-            for _, contrato in mis_contratos.iterrows():
-                with st.expander(f"📄 {contrato['nombre_contrato']}"):
-                    # Obtener actividades del contrato
-                    actividades_contrato = actividades_df[actividades_df['id_contrato']
-                                                          == contrato['id_contrato']]
+            # ... (resto del dashboard) ...
 
-                    if not actividades_contrato.empty:
-                        for _, actividad in actividades_contrato.iterrows():
-                            # Verificar si hay reporte para esta actividad
-                            reporte_actividad = mis_reportes[(mis_reportes['id_actividad']
-                                                             == actividad['id_actividad']) & (mis_reportes['fecha'].dt.month == datetime.now().month)]
+            # Botón para agregar acción
+            if st.button("➕ Agregar Nueva Acción", type="primary"):
+                st.session_state['page'] = 'add_action'
+                st.rerun()
 
-                            col1, col2, col3 = st.columns([3, 1, 1])
-                            with col1:
-                                st.write(f"**{actividad['descripcion']}**")
-                            with col2:
-                                if not reporte_actividad.empty:
-                                    st.success("✅ Reportada")
-                                else:
-                                    st.warning("⏳ Pendiente")
-                            with col3:
-                                st.write(f"{actividad['porcentaje']}%")
-                    else:
-                        st.info("No hay actividades asignadas a este contrato")
-        else:
-            st.info("No tienes contratos asignados")
+            # Resumen de actividades por contrato
+            st.subheader("📋 Mis Contratos y Actividades")
+
+            if not mis_contratos.empty:
+                for _, contrato in mis_contratos.iterrows():
+                    with st.expander(f"📄 {contrato['nombre_contrato']}"):
+                        # Obtener actividades del contrato
+                        actividades_contrato = actividades_df[actividades_df['id_contrato']
+                                                              == contrato['id_contrato']]
+
+                        if not actividades_contrato.empty:
+                            for _, actividad in actividades_contrato.iterrows():
+                                # Verificar si hay reporte para esta actividad
+                                reporte_actividad = mis_reportes[(mis_reportes['id_actividad']
+                                                                  == actividad['id_actividad']) & (mis_reportes['fecha'].dt.month == datetime.now().month)]
+
+                                col1, col2, col3 = st.columns([3, 1, 1])
+                                with col1:
+                                    st.write(f"**{actividad['descripcion']}**")
+                                with col2:
+                                    if not reporte_actividad.empty:
+                                        st.success("✅ Reportada")
+                                    else:
+                                        st.warning("⏳ Pendiente")
+                                with col3:
+                                    st.write(f"{actividad['porcentaje']}%")
+                        else:
+                            st.info(
+                                "No hay actividades asignadas a este contrato")
+            else:
+                st.info("No tienes contratos asignados")
+
+        elif st.session_state['page'] == 'add_action':
+            st.button("🔙 Volver al Dashboard", on_click=lambda: st.session_state.update(
+                {'page': 'dashboard'}))
+            self.add_action()
 
     def mostrar_formulario_agregar(self, nombre_tabla: str, df: pd.DataFrame, column_id: str):
         # """Muestra un formulario dinámico para agregar registros a una tabla.
@@ -355,10 +367,9 @@ class EmployeeInterface:
             nombre_tabla="Actividades", df=actividades_df, column_id="id_actividad")
 
     def add_action(self):
-        """Formulario para agregar una nueva acción"""
         st.header("➕ Agregar Nueva Acción")
 
-        # Obtener datos necesarios
+        # Obtener datos
         contratos_df = self.db_manager.get_data('Contratos')
         actividades_df = self.db_manager.get_data('Actividades')
         reportes_df = self.db_manager.get_data('Reportes')
@@ -371,48 +382,52 @@ class EmployeeInterface:
             st.warning("No tienes contratos asignados")
             return
 
-        with st.form("add_action_form"):
-            # Seleccionar contrato
-            contrato_options = {contrato['nombre_contrato']: contrato['id_contrato']
-                                for _, contrato in mis_contratos.iterrows()}
-            contrato_seleccionado = st.selectbox(
-                "Seleccionar Contrato", list(contrato_options.keys()))
+        # Selección de contrato
+        contrato_options = {contrato['nombre_contrato']: contrato['id_contrato']
+                            for _, contrato in mis_contratos.iterrows()}
+        contrato_seleccionado = st.selectbox(
+            "Seleccionar Contrato", list(contrato_options.keys()))
 
-            # Obtener actividades del contrato seleccionado
-            if contrato_seleccionado:
-                id_contrato = contrato_options[contrato_seleccionado]
-                actividades_contrato = actividades_df[actividades_df['id_contrato'] == id_contrato]
+        if contrato_seleccionado:
+            id_contrato = contrato_options[contrato_seleccionado]
+            actividades_contrato = actividades_df[actividades_df['id_contrato'] == id_contrato]
 
-                if not actividades_contrato.empty:
-                    actividad_options = {f"{act['descripcion']} (Nro: {act['Nro']})": act['id_actividad']
-                                         for _, act in actividades_contrato.iterrows()}
-                    actividad_seleccionada = st.selectbox(
-                        "Seleccionar Actividad", list(actividad_options.keys()))
+            if not actividades_contrato.empty:
+                actividad_options = {f"Nro: {act['Nro']}": act['id_actividad']
+                                     for _, act in actividades_contrato.iterrows()}
+                actividad_seleccionada = st.selectbox(
+                    "Seleccionar Actividad", list(actividad_options.keys()))
 
-                    # Campos del reporte
-                    st.subheader("Detalles de la Acción")
+                if actividad_seleccionada:
+                    id_actividad = actividad_options[actividad_seleccionada]
+                    actividad_info = actividades_contrato[actividades_contrato['id_actividad']
+                                                          == id_actividad].iloc[0]
+                    st.markdown(
+                        f"📝 {actividad_info['descripcion']}")
 
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        acciones_realizadas = st.text_area(
-                            "Acciones Realizadas", height=150)
-                        porcentaje = st.slider(
-                            "Porcentaje de Avance", 0, 100, 0)
+                    # Formulario de acción
+                    with st.form("add_action_form"):
+                        st.subheader("📌 Detalles de la Acción")
 
-                    with col2:
-                        comentarios = st.text_area("Comentarios", height=100)
-                        calidad = st.select_slider("Calificar Calidad",
-                                                   options=[1, 2, 3, 4, 5],
-                                                   value=3,
-                                                   format_func=lambda x: "⭐" * x)
-                        entregable = st.text_input("Entregable (opcional)")
-                        estado = st.checkbox(
-                            "Marcar como completado", value=False)
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            acciones_realizadas = st.text_area(
+                                "Acciones Realizadas", height=150)
 
-                    if st.form_submit_button("💾 Guardar Acción", type="primary"):
-                        if acciones_realizadas:
+                        with col2:
+                            porcentaje = st.slider(
+                                "Porcentaje de Avance", 0, 100, 0)
+                            entregable = st.text_input("Entregable (opcional)")
+                            estado = st.checkbox(
+                                "Marcar como completado", value=False)
+
+                        if st.form_submit_button("💾 Guardar Acción"):
+                            if not acciones_realizadas.strip():
+                                st.error(
+                                    "Por favor, describe las acciones realizadas.")
+                                return
+
                             # Verificar si ya existe un reporte para esta actividad
-                            id_actividad = actividad_options[actividad_seleccionada]
                             reporte_existente = reportes_df[
                                 (reportes_df['id_empleado'] == self.employee_id) &
                                 (reportes_df['id_actividad'] == id_actividad)
@@ -420,31 +435,23 @@ class EmployeeInterface:
 
                             if not reporte_existente.empty:
                                 st.warning(
-                                    "Ya existe un reporte para esta actividad. ¿Desea actualizarlo?")
-                                if st.button("Sí, actualizar"):
-                                    # Lógica de actualización
-                                    datos_actualizacion = {
-                                        'acciones_realizadas': acciones_realizadas,
-                                        'comentarios': comentarios,
-                                        'porcentaje': porcentaje,
-                                        'entregable': entregable,
-                                        'estado': estado,
-                                        'fecha': datetime.now()
-                                    }
-
-                                    condicion = f"id_reporte = {reporte_existente.iloc[0]['id_reporte']}"
-                                    if self.db_manager.update_data('Reportes', datos_actualizacion, condicion):
-                                        st.success(
-                                            "Reporte actualizado exitosamente")
-                                        st.cache_data.clear()
-                                        st.rerun()
-                                    else:
-                                        st.error(
-                                            "Error al actualizar el reporte")
+                                    "Ya existe un reporte para esta actividad. Se actualizará automáticamente.")
+                                datos_actualizacion = {
+                                    'acciones_realizadas': acciones_realizadas,
+                                    'porcentaje': porcentaje,
+                                    'entregable': entregable,
+                                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                }
+                                condicion = f"id_reporte = {reporte_existente.iloc[0]['id_reporte']}"
+                                if self.db_manager.update_data('Reportes', datos_actualizacion, condicion):
+                                    st.success(
+                                        "Reporte actualizado exitosamente.")
+                                    st.cache_data.clear()
+                                    st.rerun()
+                                else:
+                                    st.error("Error al actualizar el reporte.")
                             else:
                                 # Crear nuevo reporte
-                                max_id = reportes_df['id_reporte'].max(
-                                ) if not reportes_df.empty else 0
                                 nuevo_reporte = {
                                     'id_empleado': self.employee_id,
                                     'id_actividad': id_actividad,
@@ -455,21 +462,15 @@ class EmployeeInterface:
                                     'entregable': entregable,
                                     'estado': estado
                                 }
-
                                 if self.db_manager.insert_data('Reportes', nuevo_reporte):
-                                    st.success("Acción guardada exitosamente")
+                                    st.success("Acción guardada exitosamente.")
                                     st.cache_data.clear()
                                     st.rerun()
                                 else:
-                                    st.error("Error al guardar la acción")
-                        else:
-                            st.error(
-                                "Por favor, describe las acciones realizadas")
-                else:
-                    st.warning(
-                        "No hay actividades disponibles para este contrato")
-                    if st.form_submit_button(""):
-                        st.rerun()
+                                    st.error("Error al guardar la acción.")
+            else:
+                st.warning(
+                    "No hay actividades disponibles para este contrato.")
 
     def show_my_reports(self):
         """Muestra los reportes del empleado con paginación"""

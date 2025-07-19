@@ -46,13 +46,13 @@ class AdminInterface:
             st.header("Navegación")
             page = st.selectbox(
                 "Seleccionar página:",
-                ["Dashboard", "Gestión de Empleados", "Gestión de Contratos",
+                ["Dashboard", "Gestión de Colaboradores", "Gestión de Contratos",
                  "Gestión de Actividades", "Gestión de Reportes", "Enviar Notificaciones"]
             )
 
         if page == "Dashboard":
             self.show_dashboard()
-        elif page == "Gestión de Empleados":
+        elif page == "Gestión de Colaboradores":
             self.manage_employees()
         elif page == "Gestión de Contratos":
             self.manage_contracts()
@@ -76,12 +76,12 @@ class AdminInterface:
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
-            st.metric("Total Empleados", len(empleados_df))
+            st.metric("Total Colaboradores", len(empleados_df))
 
         with col2:
             empleados_activos = len(
                 empleados_df[empleados_df['activo'] == True])
-            st.metric("Empleados Activos", empleados_activos)
+            st.metric("Colaboradores Activos", empleados_activos)
 
         with col3:
             st.metric("Total Actividades", len(actividades_df))
@@ -102,9 +102,11 @@ class AdminInterface:
 
         if nombre_tabla != "Empleados":
             df_2 = self._get_cached_data("Empleados")
+            df_3 = df_2[df_2['rol'] == 'administrador'].copy()
         else:
             df_2 = pd.DataFrame(
                 columns=['id_empleado', 'nombre', 'correo', 'rol', 'activo'])
+            df_3 = df_2.copy()
 
         texto_ejemplo = {'nombre': 'James David Rodríguez Rubio',
                          'correo': 'james.rodriguez@example.com',
@@ -116,8 +118,8 @@ class AdminInterface:
                          'obligación contractual': 'Efectuar las demás actividades derivadas del objeto y naturaleza del contrato, según lo designe la entidad',
                          'actividad desarrollada': 'No aplica para el periodo evaluado',
                          'rol': ['Administrador', 'Empleado'],
-                         'id_validador': f"{self.employee_id}",
-                         'id_empleado': df_2.iloc[:, :2].set_index(df_2.columns[0]).to_dict()[df_2.columns[1]]
+                         'id_validador': {f"{emp['nombre']} ": emp['id_empleado'] for _, emp in df_3.iterrows()},
+                         'id_empleado': {f"{emp['nombre']} ": emp['id_empleado'] for _, emp in df_2.iterrows()}
                          }
 
         if st.button(f"➕ Agregar nuevo registro a {nombre_tabla}", key=f"btn_toggle_{nombre_tabla}"):
@@ -139,8 +141,6 @@ class AdminInterface:
 
                     if col_lower in texto_ejemplo:
                         ejemplo_valor = texto_ejemplo[col_lower]
-                        logger.info(
-                            f"Ejemplo para {col_lower}: {ejemplo_valor} instancia: {type(ejemplo_valor)}")
                     elif not df[col].dropna().empty:
                         ejemplo_valor = df[col].dropna().iloc[0]
                     else:
@@ -150,12 +150,26 @@ class AdminInterface:
                         nuevo_registro[col] = st.selectbox(
                             col, ejemplo_valor, index=1 if len(ejemplo_valor) > 1 else 0)
                     elif isinstance(ejemplo_valor, (dict)):
-                        nuevo_registro[col] = st.selectbox(
-                            col, [f"{k}: {v}" for k, v in ejemplo_valor.items()]).split(":")[0].strip()
+                        opcion_seleccionada = st.selectbox(
+                            col, list(ejemplo_valor.keys()))
+                        nuevo_registro[col] = ejemplo_valor[opcion_seleccionada]
                     elif isinstance(ejemplo_valor, (bool, np.bool)):
                         nuevo_registro[col] = st.checkbox(col, value=True)
                     elif isinstance(ejemplo_valor, str) and ejemplo_valor.lower() in ["sí", "no"]:
                         nuevo_registro[col] = st.selectbox(col, ["Sí", "No"])
+                    elif isinstance(ejemplo_valor, (int, float)):
+                        step = 1 if isinstance(ejemplo_valor, int) else 1
+                        nuevo_registro[col] = st.number_input(
+                            col, value=int(ejemplo_valor), step=step)
+                    elif isinstance(ejemplo_valor, datetime):
+                        nuevo_registro[col] = st.date_input(
+                            col, value=ejemplo_valor.date())
+                    elif isinstance(ejemplo_valor, pd.Timestamp):
+                        nuevo_registro[col] = st.date_input(
+                            col, value=ejemplo_valor.to_pydatetime().date())
+                    elif isinstance(ejemplo_valor, type(None) or ejemplo_valor is Null):
+                        nuevo_registro[col] = st.text_input(
+                            col, value="", placeholder="Ingrese un valor")
                     else:
                         nuevo_registro[col] = st.text_input(
                             col, value="", placeholder=str(ejemplo_valor))
@@ -163,13 +177,13 @@ class AdminInterface:
                 if st.form_submit_button("Agregar"):
                     logger.info(
                         f"Nuevo registro para {nombre_tabla}: {nuevo_registro}")
-                    if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
-                        st.success("Registro agregado exitosamente")
-                        st.session_state[toggle_key] = False
-                        st.cache_data.clear()
-                        st.rerun()
-                    else:
-                        st.error("Error al agregar registro")
+                    # if self.db_manager.insert_data(nombre_tabla, nuevo_registro):
+                    #     st.success("Registro agregado exitosamente")
+                    #     st.session_state[toggle_key] = False
+                    #     st.cache_data.clear()
+                    #     st.rerun()
+                    # else:
+                    #     st.error("Error al agregar registro")
                 cancelar = st.form_submit_button("Cancelar")
                 if cancelar:
                     st.session_state[toggle_key] = None
@@ -182,20 +196,58 @@ class AdminInterface:
         valores_actualizados = {}
         condiciones = {}
 
+        if nombre_tabla != "Empleados":
+            df_2 = self._get_cached_data("Empleados")
+            df_3 = df_2[df_2['rol'] == 'administrador'].copy()
+        else:
+            df_2 = pd.DataFrame(
+                columns=['id_empleado', 'nombre', 'correo', 'rol', 'activo'])
+            df_3 = df_2.copy()
+
+        texto_ejemplo = {'rol': ['Administrador', 'Empleado'],
+                         'id_validador': {f"{emp['nombre']} ": emp['id_empleado'] for _, emp in df_3.iterrows()},
+                         'id_empleado': {f"{emp['nombre']} ": emp['id_empleado'] for _, emp in df_2.iterrows()}
+                         }
+
         for col in df.columns:
             valor_actual = row[col]
+            logger.info(f"Columna: {col}, Valor actual: {valor_actual}")
 
-            if col.lower() == "id" or col.startswith("id_"):
-                # Usar como condición para actualizar
+            col_lower = col.lower()
+
+            if col_lower == next(iter(df.columns)).lower():
                 condiciones[col] = valor_actual
                 continue
 
-            if isinstance(valor_actual, bool):
+            if col_lower in texto_ejemplo:
+                valor_actual = texto_ejemplo[col_lower]
+            elif not df[col].dropna().empty:
+                valor_actual = df[col].dropna().iloc[0]
+            else:
+                valor_actual = None
+
+            if isinstance(valor_actual,  (bool, np.bool)):
                 valores_actualizados[col] = st.checkbox(
-                    col, value=valor_actual)
+                    col, value=bool(valor_actual))
             elif isinstance(valor_actual, str) and valor_actual.lower() in ["sí", "no"]:
                 valores_actualizados[col] = st.selectbox(
                     col, ["Sí", "No"], index=["Sí", "No"].index(valor_actual))
+            elif isinstance(valor_actual, (list, tuple, np.ndarray)):
+                valores_actualizados[col] = st.selectbox(
+                    col, valor_actual, index=1 if len(valor_actual) > 1 else 0)
+            elif isinstance(valor_actual, (dict)):
+                opcion_seleccionada = st.selectbox(
+                    col, list(valor_actual.keys()))
+                valores_actualizados[col] = valor_actual[opcion_seleccionada]
+            elif isinstance(valor_actual, (int, float)):
+                valores_actualizados[col] = st.number_input(
+                    col, value=int(valor_actual), step=1 if isinstance(valor_actual, int) else 1)
+            elif isinstance(valor_actual, datetime):
+                valores_actualizados[col] = st.date_input(
+                    col, value=valor_actual.date())
+            elif isinstance(valor_actual, pd.Timestamp):
+                valores_actualizados[col] = st.date_input(
+                    col, value=valor_actual.to_pydatetime().date())
             else:
                 valores_actualizados[col] = st.text_input(
                     col, value=str(valor_actual))
@@ -249,7 +301,7 @@ class AdminInterface:
 
         # Mostrar tabla con botones Editar y Eliminar
         if not empleados_df.empty:
-            st.title("Tabla de Empleados")
+            st.title("Tabla de Colaboradores")
 
             # Mostrar encabezados
             # +2 para Editar y Eliminar
@@ -329,111 +381,95 @@ class AdminInterface:
             nombre_tabla="Empleados", df=empleados_df, column_id="id_empleado")
 
     def manage_contracts(self):
-        """Gestión de contratos con búsqueda y paginación"""
+        """Gestión de contratos con nombres de empleados visibles"""
         st.header("📄 Gestión de Contratos")
 
-        # Barra de búsqueda
-        search_term = st.text_input("Buscar contrato por nombre")
-
+        # Obtener datos
         contratos_df = self._get_cached_data('Contratos')
+        empleados_df = self._get_cached_data('Empleados')
 
-        # Filtrar por término de búsqueda
-        if search_term:
-            mask = contratos_df['nombre_contrato'].str.contains(
-                search_term, case=False)
-            contratos_df = contratos_df[mask]
+        # Renombrar columnas para evitar conflictos
+        empleados_validador_df = empleados_df.copy()
+        empleados_df = empleados_df.rename(
+            columns={'id_empleado': 'id_empleado_fk', 'nombre': 'colaborador'})
+        empleados_validador_df = empleados_validador_df.rename(
+            columns={'id_empleado': 'id_validador_fk', 'nombre': 'validador'})
 
-        # Paginación
-        page_size = st.selectbox("Registros por página", [5, 10, 20], index=1)
-        total_pages = max(1, (len(contratos_df) // page_size) +
-                          (1 if len(contratos_df) % page_size > 0 else 0))
-        page = st.number_input('Página', min_value=1,
-                               max_value=total_pages, value=1)
-        start_idx = (page - 1) * page_size
-        end_idx = min(start_idx + page_size, len(contratos_df))
+        # Merge para mostrar nombres
+        contratos_df = contratos_df.merge(
+            empleados_df[['id_empleado_fk', 'colaborador']],
+            left_on='id_empleado', right_on='id_empleado_fk', how='left'
+        )
+        contratos_df = contratos_df.merge(
+            empleados_validador_df[['id_validador_fk', 'validador']],
+            left_on='id_validador', right_on='id_validador_fk', how='left'
+        )
 
-        contratos_df = contratos_df.iloc[start_idx:end_idx]
-
-        # Mostrar tabla con botones Editar y Eliminar
+        contratos_df = contratos_df.drop(
+            columns=['id_empleado', 'id_validador', 'id_empleado_fk', 'id_validador_fk'])
+        # Mostrar tabla con nombres
+        st.subheader("📋 Lista de Contratos")
         if not contratos_df.empty:
-            st.title("Tabla de Contratos")
-
-            # Mostrar encabezados
-            # +2 para Editar y Eliminar
             cols = st.columns(len(contratos_df.columns) + 2)
             for i, col in enumerate(contratos_df.columns):
                 cols[i].markdown(f"**{col}**")
             cols[-2].markdown("**Editar**")
             cols[-1].markdown("**Eliminar**")
 
-            # Mostrar filas con botones
             for index, contrato in contratos_df.iterrows():
                 cols = st.columns(len(contrato) + 2)
-                for i, value in enumerate(contrato):
+                for i, (col_name, value) in enumerate(contrato.items()):
                     cols[i].write(value)
 
                 # Botón Editar
                 if cols[-2].button("✏️", key=f"edit_{contrato['id_contrato']}"):
                     edit_key = f'Editando_Contrato_{contrato["id_contrato"]}'
-                    if st.session_state.get(edit_key, False):
-                        # Si ya está en modo edición, cancelar
-                        st.session_state[edit_key] = False
-                        st.session_state['edit_index'] = None
-                        st.success("Edición cancelada")
-                        st.rerun()
-                    else:
-                        # Activar modo edición
-                        st.session_state[edit_key] = True
-                        st.session_state[f"edit_index"] = index
+                    st.session_state[edit_key] = not st.session_state.get(
+                        edit_key, False)
+                    st.session_state['edit_index'] = index
+                    st.rerun()
 
                 # Botón Eliminar
                 if cols[-1].button("🗑️", key=f"delete_{contrato['id_contrato']}"):
                     st.session_state.show_confirm = True
-                    st.session_state.contract_to_delete = contrato['id_contrato']
-                    st.warning(f"Eliminar fila {index}: {contrato.to_dict()}")
+                    st.session_state.contrato_to_delete = contrato['id_contrato']
+                    st.warning(f"Eliminar contrato {contrato['id_contrato']}")
 
+                # Formulario de edición
                 if st.session_state.get(f'Editando_Contrato_{contrato["id_contrato"]}', False):
-                    # Si estamos editando, mostrar formulario de edición
-
                     st.subheader("Editar Contrato")
-                    logger.info(
-                        f"Editando contrato...{st.session_state[f'edit_index']}")
-                    # logger.info(f"Editando contrato: {row.to_dict()}")
-                    # # Formulario para editar contrato
-                    with st.form(f"edit_employee_{contrato['id_contrato']}"):
-
-                        logger.info(
-                            f"Formulario de edición para contrato: {contrato['id_contrato']}")
+                    with st.form(f"edit_contrato_{contrato['id_contrato']}"):
+                        # Usar el contrato original sin los nombres
+                        contrato_original = self._get_cached_data('Contratos')
                         self.mostrar_formulario_edicion(
-                            "Contratos", contratos_df, f'Editando_Contrato_{contrato["id_contrato"]}', contrato)
+                            "Contratos", contrato_original, f'Editando_Contrato_{contrato["id_contrato"]}', contrato_original.iloc[st.session_state['edit_index']])
 
-                if st.session_state.get('show_confirm', False) and st.session_state.get('contract_to_delete') == contrato['id_contrato']:
+                # Confirmación de eliminación
+                if st.session_state.get('show_confirm', False) and st.session_state.get('contrato_to_delete') == contrato['id_contrato']:
                     with st.form(f"confirm_delete_contrato_{contrato['id_contrato']}"):
-
                         st.warning(
-                            f"¿Estás seguro de eliminar a {contrato['nombre_contrato']}?")
+                            f"¿Estás seguro de eliminar el contrato {contrato['id_contrato']}?")
                         eliminar = st.form_submit_button("Sí, Eliminar")
                         cancelar = st.form_submit_button("Cancelar")
                         if eliminar:
                             if self.db_manager.delete_data('Contratos', {"id_contrato": contrato['id_contrato']}):
                                 st.success("Contrato eliminado exitosamente")
                                 st.session_state.show_confirm = False
-                                del st.session_state['contract_to_delete']
+                                del st.session_state['contrato_to_delete']
                                 st.cache_data.clear()
                                 st.rerun()
                             else:
                                 st.error("Error al eliminar contrato")
                         if cancelar:
                             st.session_state.show_confirm = False
-                            del st.session_state['contract_to_delete']
+                            del st.session_state['contrato_to_delete']
                             st.rerun()
-
         else:
             st.info("No hay contratos registrados")
 
         # Formulario para agregar nuevo contrato
         self.mostrar_formulario_agregar(
-            nombre_tabla="Contratos", df=contratos_df, column_id="id_contrato")
+            nombre_tabla="Contratos", df=self._get_cached_data('Contratos'), column_id="id_contrato")
 
     def manage_activities(self):
         """Gestión de actividades con búsqueda y paginación"""
